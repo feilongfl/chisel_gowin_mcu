@@ -216,21 +216,21 @@ class FLASH extends Bundle {
 class EmcuModule extends Module {
   val io = IO(new Bundle {
     val rtc_clk = Input(Clock()) // Fast clock
-    val dap = new DAP() // debug port
-    val tpiu = new TPIU()
+    // val dap = new DAP() // debug port
+    // val tpiu = new TPIU()
 
-    val interrupt = Input(UInt(5.W)) // GPINT
-    val interrupt_moni = Output(Bool()) // IntMonitor
+    // val interrupt = Input(UInt(5.W)) // GPINT
+    // val interrupt_moni = Output(Bool()) // IntMonitor
 
-    val ahb_master = new AHB() // TARGEXP0
-    val ahb_slave = Flipped(new AHB()) // INTEXP0
-    val apb_master = new APB()
+    // val ahb_master = new AHB() // TARGEXP0
+    // val ahb_slave = Flipped(new AHB()) // INTEXP0
+    // val apb_master = new APB()
 
-    val sram0 = new SRAM()
-    val flash0 = new FLASH()
+    // val sram0 = new SRAM()
+    // val flash0 = new FLASH()
 
-    val uart0 = new UART() // uart
-    val uart1 = new UART() // uart
+    // val uart0 = new UART() // uart
+    // val uart1 = new UART() // uart
   })
 
   val mcu = Module(new EMCU())
@@ -241,25 +241,119 @@ class EmcuModule extends Module {
   mcu.io.PORESETN := reset
   mcu.io.SYSRESETN := reset
 
-  // INTERRUPT
-  mcu.io.GPINT := io.interrupt
+  // // INTERRUPT
+  // mcu.io.GPINT := io.interrupt
 
-  // DAP
-  io.dap.sw := mcu.io.DAPJTAGNSW
-  io.dap.tdo_en := mcu.io.DAPNTDOEN
-  io.dap.tdo := mcu.io.DAPTDO
-  mcu.io.DAPSWDITMS := io.dap.tms
-  mcu.io.DAPTDI := io.dap.tdi
-  mcu.io.DAPNTRST := io.dap.trst
-  mcu.io.DAPSWCLKTCK := io.dap.tclk
+  // // DAP
+  // io.dap.sw := mcu.io.DAPJTAGNSW
+  // io.dap.tdo_en := mcu.io.DAPNTDOEN
+  // io.dap.tdo := mcu.io.DAPTDO
+  // mcu.io.DAPSWDITMS := io.dap.tms
+  // mcu.io.DAPTDI := io.dap.tdi
+  // mcu.io.DAPNTRST := io.dap.trst
+  // mcu.io.DAPSWCLKTCK := io.dap.tclk
 
-  // UART
-  mcu.io.UART0RXDI := io.uart0.rx
-  io.uart0.tx := mcu.io.UART0TXDO
-  io.uart0.tick := mcu.io.UART0BAUDTICK
+  // // UART
+  // mcu.io.UART0RXDI := io.uart0.rx
+  // io.uart0.tx := mcu.io.UART0TXDO
+  // io.uart0.tick := mcu.io.UART0BAUDTICK
 
-  mcu.io.UART1RXDI := io.uart1.rx
-  io.uart1.tx := mcu.io.UART1TXDO
-  io.uart1.tick := mcu.io.UART1BAUDTICK
+  // mcu.io.UART1RXDI := io.uart1.rx
+  // io.uart1.tx := mcu.io.UART1TXDO
+  // io.uart1.tick := mcu.io.UART1BAUDTICK
+
+  // FCLK <> DontCare
+  // PORESETN <> DontCare
+  // SYSRESETN <> DontCare
+  // RTCSRCCLK <> DontCare
+  mcu.io.IOEXPINPUTI <> DontCare
+  mcu.io.UART0RXDI <> DontCare
+  mcu.io.UART1RXDI <> DontCare
+  mcu.io.SRAM0RDATA <> DontCare
+  mcu.io.TARGFLASH0HRDATA <> DontCare
+  mcu.io.TARGFLASH0HRUSER <> DontCare
+  mcu.io.TARGFLASH0HRESP <> DontCare
+  mcu.io.TARGFLASH0EXRESP <> DontCare
+  mcu.io.TARGFLASH0HREADYOUT <> DontCare
+  mcu.io.TARGEXP0HRDATA <> DontCare
+  mcu.io.TARGEXP0HREADYOUT <> DontCare
+  mcu.io.TARGEXP0HRESP <> DontCare
+  mcu.io.TARGEXP0EXRESP <> DontCare
+  mcu.io.TARGEXP0HRUSER <> DontCare
+  mcu.io.INITEXP0HSEL <> DontCare
+  mcu.io.INITEXP0HADDR <> DontCare
+  mcu.io.INITEXP0HTRANS <> DontCare
+  mcu.io.INITEXP0HWRITE <> DontCare
+  mcu.io.INITEXP0HSIZE <> DontCare
+  mcu.io.INITEXP0HBURST <> DontCare
+  mcu.io.INITEXP0HPROT <> DontCare
+  mcu.io.INITEXP0MEMATTR <> DontCare
+  mcu.io.INITEXP0EXREQ <> DontCare
+  mcu.io.INITEXP0HMASTER <> DontCare
+  mcu.io.INITEXP0HWDATA <> DontCare
+  mcu.io.INITEXP0HMASTLOCK <> DontCare
+  mcu.io.INITEXP0HAUSER <> DontCare
+  mcu.io.INITEXP0HWUSER <> DontCare
+  mcu.io.APBTARGEXP2PRDATA <> DontCare
+  mcu.io.APBTARGEXP2PREADY <> DontCare
+  mcu.io.APBTARGEXP2PSLVERR <> DontCare
+  mcu.io.MTXREMAP <> DontCare
+  mcu.io.DAPSWDITMS <> DontCare
+  mcu.io.DAPTDI <> DontCare
+  mcu.io.DAPNTRST <> DontCare
+  mcu.io.DAPSWCLKTCK <> DontCare
+  mcu.io.FLASHERR <> DontCare
+  mcu.io.FLASHINT <> DontCare
+  mcu.io.GPINT <> DontCare
+  mcu.io.IOEXPOUTPUTO <> DontCare
+  mcu.io.IOEXPOUTPUTENO <> DontCare
+  mcu.io.UART0TXDO <> DontCare
+  mcu.io.UART1TXDO <> DontCare
+  mcu.io.UART0BAUDTICK <> DontCare
+  mcu.io.UART1BAUDTICK <> DontCare
+  mcu.io.INTMONITOR <> DontCare
+  mcu.io.MTXHRESETN <> DontCare
+  mcu.io.SRAM0ADDR <> DontCare
+  mcu.io.SRAM0WREN <> DontCare
+  mcu.io.SRAM0WDATA <> DontCare
+  mcu.io.SRAM0CS <> DontCare
+  mcu.io.TARGFLASH0HSEL <> DontCare
+  mcu.io.TARGFLASH0HADDR <> DontCare
+  mcu.io.TARGFLASH0HTRANS <> DontCare
+  mcu.io.TARGFLASH0HSIZE <> DontCare
+  mcu.io.TARGFLASH0HBURST <> DontCare
+  mcu.io.TARGFLASH0HREADYMUX <> DontCare
+  mcu.io.TARGEXP0HSEL <> DontCare
+  mcu.io.TARGEXP0HADDR <> DontCare
+  mcu.io.TARGEXP0HTRANS <> DontCare
+  mcu.io.TARGEXP0HWRITE <> DontCare
+  mcu.io.TARGEXP0HSIZE <> DontCare
+  mcu.io.TARGEXP0HBURST <> DontCare
+  mcu.io.TARGEXP0HPROT <> DontCare
+  mcu.io.TARGEXP0MEMATTR <> DontCare
+  mcu.io.TARGEXP0EXREQ <> DontCare
+  mcu.io.TARGEXP0HMASTER <> DontCare
+  mcu.io.TARGEXP0HWDATA <> DontCare
+  mcu.io.TARGEXP0HMASTLOCK <> DontCare
+  mcu.io.TARGEXP0HREADYMUX <> DontCare
+  mcu.io.TARGEXP0HAUSER <> DontCare
+  mcu.io.TARGEXP0HWUSER <> DontCare
+  mcu.io.INITEXP0HRDATA <> DontCare
+  mcu.io.INITEXP0HREADY <> DontCare
+  mcu.io.INITEXP0HRESP <> DontCare
+  mcu.io.INITEXP0EXRESP <> DontCare
+  mcu.io.INITEXP0HRUSER <> DontCare
+  mcu.io.APBTARGEXP2PSTRB <> DontCare
+  mcu.io.APBTARGEXP2PPROT <> DontCare
+  mcu.io.APBTARGEXP2PSEL <> DontCare
+  mcu.io.APBTARGEXP2PENABLE <> DontCare
+  mcu.io.APBTARGEXP2PADDR <> DontCare
+  mcu.io.APBTARGEXP2PWRITE <> DontCare
+  mcu.io.APBTARGEXP2PWDATA <> DontCare
+  mcu.io.DAPTDO <> DontCare
+  mcu.io.DAPJTAGNSW <> DontCare
+  mcu.io.DAPNTDOEN <> DontCare
+  mcu.io.TPIUTRACEDATA <> DontCare
+  mcu.io.TPIUTRACECLK <> DontCare
 
 }
