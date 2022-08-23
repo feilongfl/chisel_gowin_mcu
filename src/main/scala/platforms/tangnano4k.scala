@@ -23,6 +23,5 @@ class TangNano4k extends RawModule {
 }
 
 object TangNano4k extends App {
-  (new ChiselStage)
-    .execute(args, Seq(ChiselGeneratorAnnotation(() => new TangNano4k())))
+  (new ChiselStage) emitVerilog (new TangNano4k(), Array("--target-dir", "build/"))
 }
