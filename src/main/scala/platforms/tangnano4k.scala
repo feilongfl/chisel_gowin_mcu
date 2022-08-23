@@ -6,24 +6,28 @@ import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
 
 import fpgamacro.gowin._
 
+class BasicIO extends Bundle {
+  val clk_xtal = Input(Clock())
+  val reset_button = Input(Bool())
+
+  /* Debug leds */
+  val led = Output(Bool())
+}
+
 class TangNano4k extends RawModule {
-  /* Clock and reset */
-  val clk_xtal = IO(Input(Clock()))
-  val reset_button = IO(Input(Bool()))
+  // Basic IO
+  val io = IO(new BasicIO())
 
   // debug port
   val dap = IO(new DAP()) // debug port
 
-  /* Debug leds */
-  val led = IO(Output(Bool()))
-
-  withClockAndReset(clk_xtal, reset_button) {
+  withClockAndReset(io.clk_xtal, io.reset_button) {
     val mcu = Module(new EmcuModule())
-    mcu.io.rtc_clk := clk_xtal
+    mcu.io.rtc_clk := io.clk_xtal
     mcu.io.dap <> dap
   }
 
-  led := reset_button
+  io.led := io.reset_button
 }
 
 object TangNano4k extends App {
