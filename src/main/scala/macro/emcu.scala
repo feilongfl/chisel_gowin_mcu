@@ -216,7 +216,7 @@ class FLASH extends Bundle {
 class EmcuModule extends Module {
   val io = IO(new Bundle {
     val rtc_clk = Input(Clock()) // Fast clock
-    // val dap = new DAP() // debug port
+    val dap = new DAP() // debug port
     // val tpiu = new TPIU()
 
     // val interrupt = Input(UInt(5.W)) // GPINT
@@ -244,14 +244,14 @@ class EmcuModule extends Module {
   // // INTERRUPT
   // mcu.io.GPINT := io.interrupt
 
-  // // DAP
-  // io.dap.sw := mcu.io.DAPJTAGNSW
-  // io.dap.tdo_en := mcu.io.DAPNTDOEN
-  // io.dap.tdo := mcu.io.DAPTDO
-  // mcu.io.DAPSWDITMS := io.dap.tms
-  // mcu.io.DAPTDI := io.dap.tdi
-  // mcu.io.DAPNTRST := io.dap.trst
-  // mcu.io.DAPSWCLKTCK := io.dap.tclk
+  // DAP
+  io.dap.sw := mcu.io.DAPJTAGNSW
+  io.dap.tdo_en := mcu.io.DAPNTDOEN
+  io.dap.tdo := mcu.io.DAPTDO
+  mcu.io.DAPSWDITMS := io.dap.tms
+  mcu.io.DAPTDI := io.dap.tdi
+  mcu.io.DAPNTRST := io.dap.trst
+  mcu.io.DAPSWCLKTCK := io.dap.tclk
 
   // // UART
   // mcu.io.UART0RXDI := io.uart0.rx
@@ -298,10 +298,10 @@ class EmcuModule extends Module {
   mcu.io.APBTARGEXP2PREADY <> DontCare
   mcu.io.APBTARGEXP2PSLVERR <> DontCare
   mcu.io.MTXREMAP <> DontCare
-  mcu.io.DAPSWDITMS <> DontCare
-  mcu.io.DAPTDI <> DontCare
-  mcu.io.DAPNTRST <> DontCare
-  mcu.io.DAPSWCLKTCK <> DontCare
+  // mcu.io.DAPSWDITMS <> DontCare
+  // mcu.io.DAPTDI <> DontCare
+  // mcu.io.DAPNTRST <> DontCare
+  // mcu.io.DAPSWCLKTCK <> DontCare
   mcu.io.FLASHERR <> DontCare
   mcu.io.FLASHINT <> DontCare
   mcu.io.GPINT <> DontCare
@@ -350,9 +350,9 @@ class EmcuModule extends Module {
   mcu.io.APBTARGEXP2PADDR <> DontCare
   mcu.io.APBTARGEXP2PWRITE <> DontCare
   mcu.io.APBTARGEXP2PWDATA <> DontCare
-  mcu.io.DAPTDO <> DontCare
-  mcu.io.DAPJTAGNSW <> DontCare
-  mcu.io.DAPNTDOEN <> DontCare
+  // mcu.io.DAPTDO <> DontCare
+  // mcu.io.DAPJTAGNSW <> DontCare
+  // mcu.io.DAPNTDOEN <> DontCare
   mcu.io.TPIUTRACEDATA <> DontCare
   mcu.io.TPIUTRACECLK <> DontCare
 
