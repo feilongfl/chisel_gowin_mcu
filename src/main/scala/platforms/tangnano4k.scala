@@ -25,6 +25,7 @@ class TangNano4k extends RawModule {
     val mcu = Module(new EmcuModule())
     mcu.io.rtc_clk := io.clk_xtal
     mcu.io.dap <> dap
+    mcu.io.gpio <> DontCare
   }
 
   io.led := io.reset_button

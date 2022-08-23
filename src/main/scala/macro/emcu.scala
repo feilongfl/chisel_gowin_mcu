@@ -140,6 +140,12 @@ class UART extends Bundle {
   val tick = Output(Clock())
 }
 
+class GPIO extends Bundle {
+  val input = Input(UInt(16.W)) // IOEXPINPUTI
+  val output = Output(UInt(16.W)) // IOEXPOUTPUTO
+  val output_enable = Output(UInt(16.W)) // IOEXPOUTPUTENO
+}
+
 class APB extends Bundle {
   val RDATA = Input(UInt(32.W)) // APBTARGEXP2, PRDATA
   val READY = Input(Bool()) // APBTARGEXP2, PREADY
@@ -177,10 +183,6 @@ class AHB extends Bundle {
 }
 
 class unknow extends Bundle {
-// IOEXPINPUTI
-// IOEXPOUTPUTENO
-// IOEXPOUTPUTO
-
 // MTXHRESETN
 // MTXREMAP
 }
@@ -229,6 +231,8 @@ class EmcuModule extends Module {
     // val sram0 = new SRAM()
     // val flash0 = new FLASH()
 
+    val gpio = new GPIO() // gpio
+
     // val uart0 = new UART() // uart
     // val uart1 = new UART() // uart
   })
@@ -253,6 +257,11 @@ class EmcuModule extends Module {
   mcu.io.DAPNTRST := io.dap.trst
   mcu.io.DAPSWCLKTCK := io.dap.tclk
 
+  // GPIO
+  mcu.io.IOEXPINPUTI := io.gpio.input
+  io.gpio.output := mcu.io.IOEXPOUTPUTO
+  io.gpio.output_enable := mcu.io.IOEXPOUTPUTENO
+
   // // UART
   // mcu.io.UART0RXDI := io.uart0.rx
   // io.uart0.tx := mcu.io.UART0TXDO
@@ -266,7 +275,7 @@ class EmcuModule extends Module {
   // PORESETN <> DontCare
   // SYSRESETN <> DontCare
   // RTCSRCCLK <> DontCare
-  mcu.io.IOEXPINPUTI <> DontCare
+  // mcu.io.IOEXPINPUTI <> DontCare
   mcu.io.UART0RXDI <> DontCare
   mcu.io.UART1RXDI <> DontCare
   mcu.io.SRAM0RDATA <> DontCare
@@ -305,8 +314,8 @@ class EmcuModule extends Module {
   mcu.io.FLASHERR <> DontCare
   mcu.io.FLASHINT <> DontCare
   mcu.io.GPINT <> DontCare
-  mcu.io.IOEXPOUTPUTO <> DontCare
-  mcu.io.IOEXPOUTPUTENO <> DontCare
+  // mcu.io.IOEXPOUTPUTO <> DontCare
+  // mcu.io.IOEXPOUTPUTENO <> DontCare
   mcu.io.UART0TXDO <> DontCare
   mcu.io.UART1TXDO <> DontCare
   mcu.io.UART0BAUDTICK <> DontCare
