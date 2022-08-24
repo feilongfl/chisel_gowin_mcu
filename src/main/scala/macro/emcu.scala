@@ -228,7 +228,7 @@ class EmcuModule extends Module {
     // val ahb_slave = Flipped(new AHB()) // INTEXP0
     // val apb_master = new APB()
 
-    // val sram0 = new SRAM()
+    val sram0 = new SRAM()
     // val flash0 = new FLASH()
 
     val gpio = new GPIO() // gpio
@@ -257,6 +257,13 @@ class EmcuModule extends Module {
   mcu.io.DAPNTRST := io.dap.trst
   mcu.io.DAPSWCLKTCK := io.dap.tclk
 
+  // SRAM
+  io.sram0.addr := mcu.io.SRAM0ADDR
+  io.sram0.wren := mcu.io.SRAM0WREN
+  io.sram0.wdata := mcu.io.SRAM0WDATA
+  io.sram0.cs := mcu.io.SRAM0CS
+  mcu.io.SRAM0RDATA := io.sram0.rdata
+
   // GPIO
   mcu.io.IOEXPINPUTI := io.gpio.input
   io.gpio.output := mcu.io.IOEXPOUTPUTO
@@ -278,7 +285,7 @@ class EmcuModule extends Module {
   // mcu.io.IOEXPINPUTI <> DontCare
   mcu.io.UART0RXDI <> DontCare
   mcu.io.UART1RXDI <> DontCare
-  mcu.io.SRAM0RDATA <> DontCare
+  // mcu.io.SRAM0RDATA <> DontCare
   mcu.io.TARGFLASH0HRDATA <> DontCare
   mcu.io.TARGFLASH0HRUSER <> DontCare
   mcu.io.TARGFLASH0HRESP <> DontCare
@@ -322,10 +329,10 @@ class EmcuModule extends Module {
   mcu.io.UART1BAUDTICK <> DontCare
   mcu.io.INTMONITOR <> DontCare
   mcu.io.MTXHRESETN <> DontCare
-  mcu.io.SRAM0ADDR <> DontCare
-  mcu.io.SRAM0WREN <> DontCare
-  mcu.io.SRAM0WDATA <> DontCare
-  mcu.io.SRAM0CS <> DontCare
+  // mcu.io.SRAM0ADDR <> DontCare
+  // mcu.io.SRAM0WREN <> DontCare
+  // mcu.io.SRAM0WDATA <> DontCare
+  // mcu.io.SRAM0CS <> DontCare
   mcu.io.TARGFLASH0HSEL <> DontCare
   mcu.io.TARGFLASH0HADDR <> DontCare
   mcu.io.TARGFLASH0HTRANS <> DontCare

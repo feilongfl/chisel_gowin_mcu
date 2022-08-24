@@ -23,6 +23,7 @@ class TangNano4k extends RawModule {
 
   // debug port
   // val dap = IO(new DAP()) // debug port
+  val sram0 = IO(new SRAM)
 
   withClockAndReset(io.clk_xtal, io.reset_button) {
     val mcu = Module(new EmcuModule())
@@ -33,6 +34,8 @@ class TangNano4k extends RawModule {
     mcu.io.gpio.output_enable <> DontCare
 
     gpio := mcu.io.gpio.output(0)
+
+    mcu.io.sram0 <> sram0
   }
 
   io.led := io.reset_button
