@@ -341,3 +341,7 @@ hs_err_pid*
 
 # verilog output dir
 /build
+
+# GOWIN IDE Generate files
+platform/*/impl
+*.gprj.user
