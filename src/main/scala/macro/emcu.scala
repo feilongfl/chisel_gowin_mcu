@@ -3,6 +3,9 @@ package fpgamacro.gowin
 import chisel3._
 import chisel3.util._
 
+import arm.amba3._
+import gowin.cpu.peripherals._
+
 class EMCU extends BlackBox {
   val io = IO(new Bundle {
     val FCLK = Input(Clock()) // Free running clock
@@ -109,116 +112,15 @@ class EMCU extends BlackBox {
   })
 }
 
-class DAP extends Bundle {
-  val tms = Input(Bool()) // Debug TMS
-  val tdi = Input(Bool()) // Debug TDI
-  val trst = Input(Bool()) // Test reset
-  val tclk = Input(Clock()) // Test clock / SWCLK
-  val tdo = Output(Bool()) // Debug TDO
-  val tdo_en = Output(Bool()) // TDO output pad control signal
-
-  // JTAG or Serial-Wire selection JTAG mode(1) or SW mode(0)
-  val sw = Output(Bool())
-}
-
-class TPIU extends Bundle {
-  val clk = Output(Clock())
-  val data = Output(UInt(4.W))
-}
-
-class SRAM extends Bundle {
-  val addr = Output(UInt(13.W))
-  val cs = Output(Bool())
-  val rdata = Input(UInt(32.W))
-  val wdata = Output(UInt(32.W))
-  val wren = Output(UInt(4.W))
-}
-
-class UART extends Bundle {
-  val tx = Output(Bool())
-  val rx = Input(Bool())
-  val tick = Output(Clock())
-}
-
-class GPIO extends Bundle {
-  val input = Input(UInt(16.W)) // IOEXPINPUTI
-  val output = Output(UInt(16.W)) // IOEXPOUTPUTO
-  val output_enable = Output(UInt(16.W)) // IOEXPOUTPUTENO
-}
-
-class APB extends Bundle {
-  val RDATA = Input(UInt(32.W)) // APBTARGEXP2, PRDATA
-  val READY = Input(Bool()) // APBTARGEXP2, PREADY
-  val SLVERR = Input(Bool()) // APBTARGEXP2, PSLVERR
-  val STRB = Output(UInt(4.W)) // APBTARGEXP2, PSTRB
-  val PROT = Output(UInt(3.W)) // APBTARGEXP2, PPROT
-  val SEL = Output(Bool()) // APBTARGEXP2, PSELx
-  val ENABLE = Output(Bool()) // APBTARGEXP2, PENABLE
-  val ADDR = Output(UInt(12.W)) // APBTARGEXP2, PADDR
-  val WRITE = Output(Bool()) // APBTARGEXP2, PWRITE
-  val WDATA = Output(UInt(32.W)) // APBTARGEXP2, PWDATA
-}
-
-class AHB extends Bundle {
-  val EXREQ = Output(Bool())
-  val EXRESP = Input(Bool())
-  val HADDR = Input(UInt(32.W))
-  val HAUSER = Output(Bool())
-  val HBURST = Output(UInt(3.W))
-  val HMASTER = Output(UInt(4.W))
-  val HMASTLOCK = Output(Bool())
-  val HPROT = Output(UInt(4.W))
-  val HRDATA = Input(UInt(32.W))
-  val HREADYMUX = Output(Bool())
-  val HREADYOUT = Output(Bool())
-  val HRESP = Input(Bool())
-  val HRUSER = Input(UInt(3.W))
-  val HSEL = Input(Bool())
-  val HSIZE = Output(UInt(3.W))
-  val HTRANS = Output(UInt(2.W))
-  val HWDATA = Output(UInt(32.W))
-  val HWRITE = Output(Bool())
-  val HWUSER = Output(UInt(4.W))
-  val MEMATTR = Output(UInt(2.W))
-}
-
-class unknow extends Bundle {
+// class unknow extends Bundle {
 // MTXHRESETN
 // MTXREMAP
-}
-
-class FLASH extends Bundle {
-  val error = Input(Bool()) // FLASHERR
-  val interrupt = Input(Bool()) // FLASHINT
-
-  // TARGFLASH0EXRESP
-  val EXRESP = Input(Bool()) // TARGFLASH0, EXRESP
-  // TARGFLASH0HADDR
-  val HADDR = Output(UInt(29.W)) // TARGFLASH0, HADDR
-  // TARGFLASH0HBURST
-  val HBURST = Output(UInt(3.W)) // TARGFLASH0, HBURST
-  // TARGFLASH0HRDATA
-  val HRDATA = Input(UInt(32.W)) // TARGFLASH0, HRDATA
-  // TARGFLASH0HREADYMUX
-  val HREADYMUX = Output(Bool()) // TARGFLASH0, HREADYOUT
-  // TARGFLASH0HREADYOUT
-  val HREADYOUT = Input(Bool()) // TARGFLASH0, EXRESP
-  // TARGFLASH0HRESP
-  val HRESP = Input(Bool()) // TARGFLASH0, HRESP
-  // TARGFLASH0HRUSER
-  val HRUSER = Input(UInt(3.W)) // TARGFLASH0, HRUSER
-  // TARGFLASH0HSEL
-  val HSEL = Output(Bool()) // TARGFLASH0, HSELx
-  // TARGFLASH0HSIZE
-  val HSIZE = Output(UInt(3.W)) // TARGFLASH0, HSIZE
-  // TARGFLASH0HTRANS
-  val HTRANS = Output(UInt(2.W)) // TARGFLASH0, HTRANS
-}
+// }
 
 class EmcuModule extends Module {
   val io = IO(new Bundle {
     val rtc_clk = Input(Clock()) // Fast clock
-    val dap = new DAP() // debug port
+    // val dap = new DAP() // debug port
     // val tpiu = new TPIU()
 
     // val interrupt = Input(UInt(5.W)) // GPINT
@@ -228,8 +130,8 @@ class EmcuModule extends Module {
     // val ahb_slave = Flipped(new AHB()) // INTEXP0
     // val apb_master = new APB()
 
-    val sram0 = new SRAM()
-    // val flash0 = new FLASH()
+    // val sram0 = new SRAM()
+    val flash0 = new AHB_FLASH()
 
     val gpio = new GPIO() // gpio
 
@@ -245,31 +147,46 @@ class EmcuModule extends Module {
   mcu.io.PORESETN := reset
   mcu.io.SYSRESETN := reset
 
-  // // INTERRUPT
+  // INTERRUPT
   // mcu.io.GPINT := io.interrupt
 
   // DAP
-  io.dap.sw := mcu.io.DAPJTAGNSW
-  io.dap.tdo_en := mcu.io.DAPNTDOEN
-  io.dap.tdo := mcu.io.DAPTDO
-  mcu.io.DAPSWDITMS := io.dap.tms
-  mcu.io.DAPTDI := io.dap.tdi
-  mcu.io.DAPNTRST := io.dap.trst
-  mcu.io.DAPSWCLKTCK := io.dap.tclk
+  // io.dap.sw := mcu.io.DAPJTAGNSW
+  // io.dap.tdo_en := mcu.io.DAPNTDOEN
+  // io.dap.tdo := mcu.io.DAPTDO
+  // mcu.io.DAPSWDITMS := io.dap.tms
+  // mcu.io.DAPTDI := io.dap.tdi
+  // mcu.io.DAPNTRST := io.dap.trst
+  // mcu.io.DAPSWCLKTCK := io.dap.tclk
 
   // SRAM
-  io.sram0.addr := mcu.io.SRAM0ADDR
-  io.sram0.wren := mcu.io.SRAM0WREN
-  io.sram0.wdata := mcu.io.SRAM0WDATA
-  io.sram0.cs := mcu.io.SRAM0CS
-  mcu.io.SRAM0RDATA := io.sram0.rdata
+  // io.sram0.addr := mcu.io.SRAM0ADDR
+  // io.sram0.wren := mcu.io.SRAM0WREN
+  // io.sram0.wdata := mcu.io.SRAM0WDATA
+  // io.sram0.cs := mcu.io.SRAM0CS
+  // mcu.io.SRAM0RDATA := io.sram0.rdata
+
+  // flash
+  mcu.io.TARGFLASH0HRDATA := io.flash0.HRDATA
+  mcu.io.TARGFLASH0HRUSER <> io.flash0.HRUSER
+  mcu.io.TARGFLASH0HRESP <> io.flash0.HRESP
+  mcu.io.TARGFLASH0EXRESP <> io.flash0.EXRESP
+  mcu.io.TARGFLASH0HREADYOUT <> io.flash0.HREADYOUT
+  mcu.io.FLASHERR <> io.flash0.error
+  mcu.io.FLASHINT <> io.flash0.interrupt
+  io.flash0.HSEL := mcu.io.TARGFLASH0HSEL
+  io.flash0.HADDR := mcu.io.TARGFLASH0HADDR
+  io.flash0.HTRANS := mcu.io.TARGFLASH0HTRANS
+  io.flash0.HSIZE := mcu.io.TARGFLASH0HSIZE
+  io.flash0.HBURST := mcu.io.TARGFLASH0HBURST
+  io.flash0.HREADYMUX := mcu.io.TARGFLASH0HREADYMUX
 
   // GPIO
   mcu.io.IOEXPINPUTI := io.gpio.input
   io.gpio.output := mcu.io.IOEXPOUTPUTO
   io.gpio.output_enable := mcu.io.IOEXPOUTPUTENO
 
-  // // UART
+  // UART
   // mcu.io.UART0RXDI := io.uart0.rx
   // io.uart0.tx := mcu.io.UART0TXDO
   // io.uart0.tick := mcu.io.UART0BAUDTICK
@@ -286,11 +203,11 @@ class EmcuModule extends Module {
   mcu.io.UART0RXDI <> DontCare
   mcu.io.UART1RXDI <> DontCare
   // mcu.io.SRAM0RDATA <> DontCare
-  mcu.io.TARGFLASH0HRDATA <> DontCare
-  mcu.io.TARGFLASH0HRUSER <> DontCare
-  mcu.io.TARGFLASH0HRESP <> DontCare
-  mcu.io.TARGFLASH0EXRESP <> DontCare
-  mcu.io.TARGFLASH0HREADYOUT <> DontCare
+  // mcu.io.TARGFLASH0HRDATA <> DontCare
+  // mcu.io.TARGFLASH0HRUSER <> DontCare
+  // mcu.io.TARGFLASH0HRESP <> DontCare
+  // mcu.io.TARGFLASH0EXRESP <> DontCare
+  // mcu.io.TARGFLASH0HREADYOUT <> DontCare
   mcu.io.TARGEXP0HRDATA <> DontCare
   mcu.io.TARGEXP0HREADYOUT <> DontCare
   mcu.io.TARGEXP0HRESP <> DontCare
@@ -314,12 +231,12 @@ class EmcuModule extends Module {
   mcu.io.APBTARGEXP2PREADY <> DontCare
   mcu.io.APBTARGEXP2PSLVERR <> DontCare
   mcu.io.MTXREMAP <> DontCare
-  // mcu.io.DAPSWDITMS <> DontCare
-  // mcu.io.DAPTDI <> DontCare
-  // mcu.io.DAPNTRST <> DontCare
-  // mcu.io.DAPSWCLKTCK <> DontCare
-  mcu.io.FLASHERR <> DontCare
-  mcu.io.FLASHINT <> DontCare
+  mcu.io.DAPSWDITMS <> DontCare
+  mcu.io.DAPTDI <> DontCare
+  mcu.io.DAPNTRST <> DontCare
+  mcu.io.DAPSWCLKTCK <> DontCare
+  // mcu.io.FLASHERR <> DontCare
+  // mcu.io.FLASHINT <> DontCare
   mcu.io.GPINT <> DontCare
   // mcu.io.IOEXPOUTPUTO <> DontCare
   // mcu.io.IOEXPOUTPUTENO <> DontCare
@@ -329,10 +246,10 @@ class EmcuModule extends Module {
   mcu.io.UART1BAUDTICK <> DontCare
   mcu.io.INTMONITOR <> DontCare
   mcu.io.MTXHRESETN <> DontCare
-  // mcu.io.SRAM0ADDR <> DontCare
-  // mcu.io.SRAM0WREN <> DontCare
-  // mcu.io.SRAM0WDATA <> DontCare
-  // mcu.io.SRAM0CS <> DontCare
+  mcu.io.SRAM0ADDR <> DontCare
+  mcu.io.SRAM0WREN <> DontCare
+  mcu.io.SRAM0WDATA <> DontCare
+  mcu.io.SRAM0CS <> DontCare
   mcu.io.TARGFLASH0HSEL <> DontCare
   mcu.io.TARGFLASH0HADDR <> DontCare
   mcu.io.TARGFLASH0HTRANS <> DontCare
@@ -366,9 +283,9 @@ class EmcuModule extends Module {
   mcu.io.APBTARGEXP2PADDR <> DontCare
   mcu.io.APBTARGEXP2PWRITE <> DontCare
   mcu.io.APBTARGEXP2PWDATA <> DontCare
-  // mcu.io.DAPTDO <> DontCare
-  // mcu.io.DAPJTAGNSW <> DontCare
-  // mcu.io.DAPNTDOEN <> DontCare
+  mcu.io.DAPTDO <> DontCare
+  mcu.io.DAPJTAGNSW <> DontCare
+  mcu.io.DAPNTDOEN <> DontCare
   mcu.io.TPIUTRACEDATA <> DontCare
   mcu.io.TPIUTRACECLK <> DontCare
 
