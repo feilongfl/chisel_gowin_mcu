@@ -6,8 +6,8 @@
 //Device: GW1NSR-4C
 //Created Time: Sat 01 08 17:17:09 2022
 
-IO_LOC "gpio" 10;
-IO_PORT "gpio" PULL_MODE=UP DRIVE=8;
+IO_LOC "led" 10;
+IO_PORT "led" PULL_MODE=UP DRIVE=8;
 IO_LOC "reset" 15;
 IO_PORT "reset" PULL_MODE=UP;
 IO_LOC "clock" 45;

@@ -61,26 +61,16 @@ class TangNano4k extends Module {
   // debug led
   val led = IO(Output(Bool()))
 
-  // GPIO
-  val gpio = IO(Output(Bool()))
-
-  // debug port
-  // val dap = IO(new DAP()) // debug port
-
-  // withClockAndReset(io.clk_xtal, io.reset_button) {
+  // emcu
   val mcu = Module(new EmcuModule())
-  val sram0 = Module(new BSRAM_SP_Module)
 
-  mcu.io.rtc_clk := clock
   mcu.io.dap <> DontCare
+  mcu.io.sram0 <> DontCare
+  mcu.io.rtc_clk := clock
   mcu.io.gpio.input <> 0x5555.U(16.W)
   mcu.io.gpio.output_enable <> DontCare
 
-  gpio := mcu.io.gpio.output(0)
-
-  mcu.io.sram0 <> sram0.ram
-
-  led := reset
+  led := mcu.io.gpio.output(0)
 }
 
 object TangNano4k extends App {
