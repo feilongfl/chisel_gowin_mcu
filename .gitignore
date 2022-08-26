@@ -345,3 +345,6 @@ hs_err_pid*
 # GOWIN IDE Generate files
 platform/*/impl
 *.gprj.user
+.bloop
+.metals
+metals.sbt
