@@ -11,7 +11,8 @@ lazy val root = (project in file("."))
     name := "chisel_gowin_mcu",
     libraryDependencies ++= Seq(
       "edu.berkeley.cs" %% "chisel3" % chiselVersion,
-      "edu.berkeley.cs" %% "chiseltest" % "0.5.1" % "test"
+      "edu.berkeley.cs" %% "chiseltest" % "0.5.1" % "test",
+      "org.armadeus" %% "fpgamacro" % "0.1.0",
     ),
     scalacOptions ++= Seq(
       "-language:reflectiveCalls",
