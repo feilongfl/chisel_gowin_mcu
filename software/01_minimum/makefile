@@ -15,7 +15,7 @@ build/blink.bin: build/blink.elf
 	arm-none-eabi-objcopy -O binary build/blink.elf build/blink.bin
 
 build/blink.bin.txt: build/blink.bin
-	xxd -eg4 build/blink.bin | cut -d ' ' -f 2-5 | tr '[:space:]' '\n' | grep -v '^$$' | sed -r s/^/0x/ | sed -r 's/$$/,/' > build/blink.bin.txt
+	xxd -eg4 build/blink.bin | cut -d ' ' -f 2-5 | tr '[:space:]' '\n' | grep -v '^$$' | sed -r s/^/\"/ | sed -r 's/$$/",/' > build/blink.bin.txt
 
 clean:
 	rm -rv build
