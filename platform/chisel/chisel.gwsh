@@ -1,0 +1,6 @@
+
+set_device GW1NSR-LV4CQN48PC7/I6
+set_option -top_module TangNano4k
+set_option -output_base_name chisel
+
+run all
