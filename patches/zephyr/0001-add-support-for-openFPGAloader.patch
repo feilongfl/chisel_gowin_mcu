@@ -1,0 +1,79 @@
+From 0added52344f42c1865f16ce5131204a63f51d4e Mon Sep 17 00:00:00 2001
+From: YuLong Yao <feilongphone@gmail.com>
+Date: Fri, 3 Feb 2023 06:09:36 +0800
+Subject: [PATCH] add support for openFPGAloader
+
+Signed-off-by: YuLong Yao <feilongphone@gmail.com>
+---
+ scripts/west_commands/runners/__init__.py     |  1 +
+ .../west_commands/runners/openFPGALoader.py   | 46 +++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+ create mode 100644 scripts/west_commands/runners/openFPGALoader.py
+
+diff --git a/scripts/west_commands/runners/__init__.py b/scripts/west_commands/runners/__init__.py
+index 90eefcadff..c5ffc75722 100644
+--- a/scripts/west_commands/runners/__init__.py
++++ b/scripts/west_commands/runners/__init__.py
+@@ -42,6 +42,7 @@ _names = [
+     'nios2',
+     'nrfjprog',
+     'nsim',
++    'openFPGALoader',
+     'openocd',
+     'pyocd',
+     'qemu',
+diff --git a/scripts/west_commands/runners/openFPGALoader.py b/scripts/west_commands/runners/openFPGALoader.py
+new file mode 100644
+index 0000000000..b81d59abb7
+--- /dev/null
++++ b/scripts/west_commands/runners/openFPGALoader.py
+@@ -0,0 +1,46 @@
++# Copyright (c) 2023 YuLong Yao <feilongphone@gmail.com>
++#
++# SPDX-License-Identifier: Apache-2.0
++
++'''openFPGAloader for flash FPGAs.'''
++
++from os import path
++
++from runners.core import ZephyrBinaryRunner, RunnerCaps
++
++
++class OFLBinaryRunner(ZephyrBinaryRunner):
++    '''Runner front-end for openFPGAloader.'''
++
++    def __init__(self, cfg, logic):
++        super().__init__(cfg)
++
++        self.ofl = 'openFPGALoader'
++        self.logic = logic
++
++    @classmethod
++    def name(cls):
++        return 'openFPGALoader'
++
++    @classmethod
++    def capabilities(cls):
++        return RunnerCaps(commands={'flash'})
++
++    @classmethod
++    def do_add_parser(cls, parser):
++        parser.add_argument('--logic', required=True,
++                            help='program logic')
++        pass
++
++    @classmethod
++    def do_create(cls, cfg, args):
++        return OFLBinaryRunner(cfg, args.logic)
++
++    def do_run(self, command, **kwargs):
++        gdb_cmd = [self.ofl,
++                   '-f',
++                   self.logic,
++                   '--mcufw', self.cfg.bin_file]
++        # self.require(gdb_cmd[0])
++        self.check_call(gdb_cmd)
++        pass
+-- 
+2.39.1
+
