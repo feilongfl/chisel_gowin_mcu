@@ -1,0 +1,12 @@
+# Copyright (c) 2023 YuLong Yao <feilongphone@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+if SOC_SERIES_GWEMPU
+
+# source "soc/arm/gowin/empu/Kconfig.defconfig.gw*"
+rsource "./Kconfig.defconfig.gw*"
+
+config SOC_SERIES
+	default "gwempu"
+
+endif # SOC_SERIES_GD32A50X

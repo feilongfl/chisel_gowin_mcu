@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2023 YuLong Yao <feilongphone@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# source "soc/arm/gowin/*/Kconfig.defconfig.series"
+rsource "./*/Kconfig.defconfig.series"
+
+if SOC_FAMILY_GOWIN
+
+config SOC_SERIES
+	default "gowin"
+
+endif # SOC_FAMILY_GOWIN
