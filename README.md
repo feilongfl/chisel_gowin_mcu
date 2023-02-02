@@ -28,7 +28,7 @@ It is based on the GW1NSR-4C chip of Chinese semiconductor manufacturer GOWIN. I
 
 ``` shell
 # compile
-west build -p always -b tangnano4k .
+west build -p always -b tangnano4k samples/basic/blinky
 # flash to board
 west flash
 ```
