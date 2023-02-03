@@ -13,3 +13,9 @@ class PIO_Uart extends Bundle {
   val tx = Output(UInt(1.W))
   val rx = Input(UInt(1.W))
 }
+
+class PIO_GPIO(width: Int = 16) extends Bundle {
+  val outen = Output(UInt(width.W))
+  val out = Output(UInt(width.W))
+  val in = Input(UInt(width.W))
+}

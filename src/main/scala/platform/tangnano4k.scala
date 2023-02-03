@@ -6,31 +6,11 @@ import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
 import chisel3.experimental.Analog
 
 import gowin.ips.Gowin_EMPU
-import pio.{PIO_IIC, PIO_Uart}
-
-class TangNano4kGPIO extends BlackBox with HasBlackBoxInline {
-  val io = IO(new Bundle {
-    val mcu_gpio = Analog(16.W)
-
-    val led = Analog(1.W)
-  })
-
-  setInline(
-    "TangNano4kGPIO.v",
-    """
-  |module TangNano4kGPIO(
-  |  inout[15:0]   mcu_gpio,
-  |  inout         led
-  |);
-  |  assign mcu_gpio[0] = led;
-  |endmodule
-  |""".stripMargin
-  )
-}
+import pio.{PIO_IIC, PIO_Uart, PIO_GPIO}
 
 class TangNano4k extends Module {
   // debug led
-  val led = IO(Analog(1.W))
+  val led = IO(Output(UInt(1.W)))
   val iic = IO(new PIO_IIC())
   val uart_tx = IO(Output(UInt(1.W)))
 
@@ -39,9 +19,8 @@ class TangNano4k extends Module {
     val emcu = Module(new Gowin_EMPU())
 
     // peripherals - GPIO
-    val gpio = Module(new TangNano4kGPIO())
-    gpio.io.mcu_gpio <> emcu.gpio
-    led <> gpio.io.led
+    led := emcu.gpio.out & 0x01.U
+    emcu.gpio <> DontCare
 
     iic <> emcu.iic
     uart_tx <> emcu.uart.tx
