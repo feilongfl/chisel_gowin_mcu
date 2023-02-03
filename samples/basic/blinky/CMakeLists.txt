@@ -27,7 +27,7 @@ ExternalProject_Add(
   && sbt run
   && echo "#!/usr/bin/gw_sh" > ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_build_dir} -name "*.v" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
-  && find ${app_logic_src_dir} -name "*.v" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
+  && find ${app_logic_src_dir} -name "*.v" | grep -v _tmp.v | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_src_dir} -name "*.cst" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_src_dir} -name "*.sdc" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && cat ${app_logic_src_dir}/chisel.gwsh >> ${app_logic_build_dir}/compile.gwsh
