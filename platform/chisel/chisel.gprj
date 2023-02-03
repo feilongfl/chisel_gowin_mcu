@@ -5,8 +5,8 @@
     <Version>5</Version>
     <Device name="GW1NSR-4C" pn="GW1NSR-LV4CQN48PC7/I6">gw1nsr4c-009</Device>
     <FileList>
-        <File path="../../build/TangNano4k/TangNano4k.v" type="file.verilog" enable="1" />
-        <File path="../../build/TangNano4k/TangNano4kGPIO.v" type="file.verilog" enable="1" />
+        <File path="../../build/app_logic/TangNano4k.v" type="file.verilog" enable="1" />
+        <File path="../../build/app_logic/TangNano4kGPIO.v" type="file.verilog" enable="1" />
         <File path="src/gowin_empu/gowin_empu.v" type="file.verilog" enable="1" />
         <File path="src/chisel.cst" type="file.cst" enable="1" />
         <File path="src/chisel.sdc" type="file.sdc" enable="1" />
