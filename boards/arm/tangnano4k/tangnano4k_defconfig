@@ -9,7 +9,7 @@ CONFIG_BOARD_TANGNANO4K=y
 # CONFIG_ARM_MPU=y
 
 # enable GPIO
-# CONFIG_GPIO=y
+CONFIG_GPIO=y
 
 # enable uart driver
 # CONFIG_SERIAL=y
