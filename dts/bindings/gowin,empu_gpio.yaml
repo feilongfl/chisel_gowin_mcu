@@ -1,0 +1,13 @@
+description: GOWIN EMPU GPIO
+
+compatible: "gowin,empu_gpio"
+
+include: [gpio-controller.yaml, base.yaml]
+
+properties:
+  reg:
+    required: true
+
+gpio-cells:
+  - pin
+  - flags
