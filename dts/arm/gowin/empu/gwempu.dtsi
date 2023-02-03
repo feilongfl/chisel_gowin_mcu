@@ -9,6 +9,8 @@
 #include <zephyr/dt-bindings/gpio/gpio.h>
 
 / {
+	#address-cells = <1>;
+	#size-cells = <1>;
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -30,6 +32,24 @@
 
 	flash0: flash@0 {
 		compatible = "zephyr,sim-flash";
+	};
+
+	gpio: gpio@40010000 {
+		gpio-controller;
+		compatible = "gowin,empu_gpio";
+		reg = <0x40010000 0x1000>;
+		ngpios = <16>;
+		#gpio-cells = <2>;
+	};
+
+	uart0: uart@40004000 {
+		compatible = "gowin,empu_uart";
+		reg = <0x40004000 0x1000>;
+	};
+
+	uart1: uart@40005000 {
+		compatible = "gowin,empu_uart";
+		reg = <0x40005000 0x1000>;
 	};
 };
 
