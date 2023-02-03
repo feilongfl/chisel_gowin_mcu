@@ -12,7 +12,7 @@ class TangNano4k extends Module {
   // debug led
   val led = IO(Output(UInt(1.W)))
   val iic = IO(new PIO_IIC())
-  val uart_tx = IO(Output(UInt(1.W)))
+  // val uart_tx = IO(Output(UInt(1.W)))
 
   withReset(reset.asBool()) {
     // xtal freq: 27 MHz
@@ -22,9 +22,9 @@ class TangNano4k extends Module {
     led := emcu.gpio.out & 0x01.U
     emcu.gpio <> DontCare
 
-    iic <> emcu.iic
-    uart_tx <> emcu.uart.tx
-    emcu.uart.rx <> DontCare
+    // iic <> emcu.iic
+    // uart_tx <> emcu.uart.tx
+    // emcu.uart.rx <> DontCare
   }
 }
 

@@ -15,10 +15,10 @@ class Gowin_EMPU_Top(gpio_width: Int = 16) extends BlackBox {
     val gpioout = Output(UInt(gpio_width.W))
     val gpioouten = Output(UInt(gpio_width.W))
 
-    val scl = Analog(1.W)
-    val sda = Analog(1.W)
-    val uart0_txd = Output(UInt(1.W))
-    val uart0_rxd = Input(UInt(1.W))
+    // val scl = Analog(1.W)
+    // val sda = Analog(1.W)
+    // val uart0_txd = Output(UInt(1.W))
+    // val uart0_rxd = Input(UInt(1.W))
   })
 }
 
@@ -30,27 +30,27 @@ class Gowin_EMPU_Module(gpio_width: Int = 16) extends Module {
 
   val peripherals = IO(new Bundle {
     val gpio = new PIO_GPIO(gpio_width)
-    val iic = new PIO_IIC()
-    val uart0 = new PIO_Uart()
+    // val iic = new PIO_IIC()
+    // val uart0 = new PIO_Uart()
   })
   peripherals.gpio.in <> emcu.io.gpioin
   peripherals.gpio.out <> emcu.io.gpioout
   peripherals.gpio.outen <> emcu.io.gpioouten
 
-  peripherals.iic.clock <> emcu.io.scl
-  peripherals.iic.data <> emcu.io.sda
+  // peripherals.iic.clock <> emcu.io.scl
+  // peripherals.iic.data <> emcu.io.sda
 
-  peripherals.uart0.tx <> emcu.io.uart0_txd
-  peripherals.uart0.rx <> emcu.io.uart0_rxd
+  // peripherals.uart0.tx <> emcu.io.uart0_txd
+  // peripherals.uart0.rx <> emcu.io.uart0_rxd
 }
 
 class Gowin_EMPU(freq: UInt = 27000000.U) extends Module {
   val gpio = IO(new PIO_GPIO(16))
-  val iic = IO(new PIO_IIC())
-  val uart = IO(new PIO_Uart())
+  // val iic = IO(new PIO_IIC())
+  // val uart = IO(new PIO_Uart())
   val mcu = Module(new Gowin_EMPU_Module())
 
   gpio <> mcu.peripherals.gpio
-  iic <> mcu.peripherals.iic
-  uart <> mcu.peripherals.uart0
+  // iic <> mcu.peripherals.iic
+  // uart <> mcu.peripherals.uart0
 }
