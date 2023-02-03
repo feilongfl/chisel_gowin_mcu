@@ -19,3 +19,10 @@ class PIO_GPIO(width: Int = 16) extends Bundle {
   val out = Output(UInt(width.W))
   val in = Input(UInt(width.W))
 }
+
+class SRAM() extends Bundle {
+  val data_out = Output(UInt(32.W));
+  val data_in = Input(UInt(32.W));
+  val address = Input(UInt(14.W));
+  val write_enable = Input(UInt(1.W));
+}
