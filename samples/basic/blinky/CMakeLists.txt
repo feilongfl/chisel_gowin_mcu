@@ -10,6 +10,10 @@ set(SOC_ROOT ${PROJECT_ROOT})
 set(DTS_ROOT ${PROJECT_ROOT})
 set(LOGIC_ROOT ${PROJECT_ROOT})
 
+list(APPEND ZEPHYR_EXTRA_MODULES
+  ${PROJECT_ROOT}/drivers
+)
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(out_of_tree_board)
 
