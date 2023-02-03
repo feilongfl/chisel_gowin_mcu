@@ -1,0 +1,9 @@
+description: GOWIN EMPU uart
+
+compatible: "gowin,empu_uart"
+
+include: uart-controller.yaml
+
+properties:
+  reg:
+    required: true
