@@ -28,7 +28,9 @@ ExternalProject_Add(
   CONFIGURE_COMMAND ""
   BUILD_COMMAND
   echo run sbt compile for logic...
+  && pushd ${app_logic_root_dir}/logic
   && sbt run
+  && popd
   && echo "#!/usr/bin/gw_sh" > ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_build_dir} -name "*.v" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_src_dir} -name "*.v" | grep -v _tmp.v | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh

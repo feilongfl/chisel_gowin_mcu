@@ -31,6 +31,6 @@ class TangNano4k extends Module {
 object TangNano4k extends App {
   (new ChiselStage) emitVerilog (new TangNano4k(), Array(
     "--target-dir",
-    "build/app_logic"
+    "../build/app_logic"
   ))
 }
