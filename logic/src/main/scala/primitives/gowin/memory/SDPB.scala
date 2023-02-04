@@ -1,5 +1,7 @@
 package primitives.gowin.memory
 
+import chisel3._
+
 class SDPB extends BlackBox {
   val io = IO(new Bundle {
     // DO[31:0]/DO[35:0]Output数据输出信号
@@ -21,13 +23,13 @@ class SDPB extends BlackBox {
     // RESETAInputA 端复位输入信号，支持同步复位和异步复位，高电
     // 平有效
     val RESETA = Input(Reset());
-    // RESETBInputB 端复位输入信号，支持同步复位和异步复位，高电
+    // RESETB InputB 端复位输入信号，支持同步复位和异步复位，高电
     // 平有效。RESETB 复位寄存器，而不是复位存储器内
     // 的值
-    val RESETA = Input(Reset());
+    val RESETB = Input(Reset());
     // OCEInput输出时钟使能信号，用于 pipline 模式，对 bypass 模
     // 式无效
-    val ORE = Input(UInt(1.W));
+    val OCE = Input(UInt(1.W));
     // BLKSELA[2:0]InputBSRAM A 端口块选择信号, 用于需要多个 BSRAM
     // 存储单元级联实现容量扩展
     val BLKSELA = Input(UInt(1.W));

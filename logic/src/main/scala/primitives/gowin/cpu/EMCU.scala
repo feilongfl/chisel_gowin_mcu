@@ -28,7 +28,7 @@ class EMCU() extends BlackBox {
     // SRAM0WREN[3:0] output SRAM Byte write enable
     val SRAM0WREN = Output(UInt(4.W));
     // SRAM0WDATA[31:0] output SRAM Write data
-    val SRAM0WREN = Output(UInt(32.W));
+    val SRAM0WDATA = Output(UInt(32.W));
     // SRAM0CS output SRAM Chip select
     val SRAM0CS = Output(UInt(1.W));
 
@@ -50,20 +50,34 @@ class EMCU() extends BlackBox {
 
     // ** FLASH
     // MTXHRESETN output SRAM/Flash Chip reset
+    val MTXHRESETN = Output(UInt(1.W))
     // MTXREMAP[3:0] input The MTXREMAP signals control the remapping of the boot memory range.
     // FLASHERR input Output clock, used by the TPA to sample the other pins
+    val FLASHERR = Input(UInt(1.W))
     // FLASHINT input Output clock, used by the TPA to sample the other pins
+    val FLASHINT = Input(UInt(1.W))
     // TARGFLASH0HRDATA[31:0] input TARGFLASH0, HRDATA
+    val TARGFLASH0HRDATA = Input(UInt(32.W))
     // TARGFLASH0HRUSER[2:0] input TARGFLASH0, HRUSER
+    val TARGFLASH0HRUSER = Input(UInt(3.W))
     // TARGFLASH0HRESP input TARGFLASH0, HRESP
+    val TARGFLASH0HRESP = Input(UInt(1.W))
     // TARGFLASH0EXRESP input TARGFLASH0, EXRESP
+    val TARGFLASH0EXRESP = Input(UInt(1.W))
     // TARGFLASH0HREADYOUT input TARGFLASH0, EXRESP
+    val TARGFLASH0HREADYOUT = Input(UInt(1.W))
     // TARGFLASH0HSEL output TARGFLASH0, HSELx
+    val TARGFLASH0HSEL = Output(UInt(1.W))
     // TARGFLASH0HADDR[28:0] output TARGFLASH0, HADDR
+    val TARGFLASH0HADDR = Output(UInt(29.W))
     // TARGFLASH0HTRANS[1:0] output TARGFLASH0, HTRANS
+    val TARGFLASH0HTRANS = Output(UInt(2.W))
     // TARGFLASH0HSIZE[2:0] output TARGFLASH0, HSIZE
+    val TARGFLASH0HSIZE = Output(UInt(3.W))
     // TARGFLASH0HBURST[2:0] output TARGFLASH0, HBURST
+    val TARGFLASH0HBURST = Output(UInt(3.W))
     // TARGFLASH0HREADYMUX output TARGFLASH0, HREADYOUT
+    val TARGFLASH0HREADYMUX = Output(UInt(1.W))
 
     // AHB
     // TARGEXP0HRDATA[31:0] input TARGEXP0, HRDATA
@@ -140,14 +154,46 @@ class Gowin_EMPU_Bundle_GPIO() extends Bundle {
   val in = Input(UInt(16.W))
 }
 
-class Gowin_EMPU_Bundle_SRAM extends Module {
-  val sp = Module(new SP())
+class Gowin_EMPU_Bundle_SRAM() extends Bundle {
+  // SRAM0RDATA[31:0] input SRAM Read data bus
+  val data_in = Input(UInt(32.W));
+  // SRAM0ADDR[12:0] output SRAM address
+  val address = Output(UInt(13.W));
+  // SRAM0WREN[3:0] output SRAM Byte write enable
+  val write_enable = Output(UInt(4.W));
+  // SRAM0WDATA[31:0] output SRAM Write data
+  val data_out = Output(UInt(32.W));
+  // SRAM0CS output SRAM Chip select
+  val output_enable = Output(UInt(1.W));
+}
 
-  sp.io.CLK := clock
-  sp.io.RESET := reset
-  sp.io.CE := 1.U(1.W)
-
-  val sram = IO(new SRAM())
+class Gowin_EMPU_Bundle_FLASH() extends Bundle {
+  // FLASHERR input Output clock, used by the TPA to sample the other pins
+  val FLASHERR = Input(UInt(1.W))
+  // FLASHINT input Output clock, used by the TPA to sample the other pins
+  val FLASHINT = Input(UInt(1.W))
+  // TARGFLASH0HRDATA[31:0] input TARGFLASH0, HRDATA
+  val data = Input(UInt(32.W))
+  // TARGFLASH0HRUSER[2:0] input TARGFLASH0, HRUSER
+  val TARGFLASH0HRUSER = Input(UInt(3.W))
+  // TARGFLASH0HRESP input TARGFLASH0, HRESP
+  val TARGFLASH0HRESP = Input(UInt(1.W))
+  // TARGFLASH0EXRESP input TARGFLASH0, EXRESP
+  val TARGFLASH0EXRESP = Input(UInt(1.W))
+  // TARGFLASH0HREADYOUT input TARGFLASH0, EXRESP
+  val ready = Input(UInt(1.W))
+  // TARGFLASH0HSEL output TARGFLASH0, HSELx
+  val TARGFLASH0HSEL = Output(UInt(1.W))
+  // TARGFLASH0HADDR[28:0] output TARGFLASH0, HADDR
+  val address = Output(UInt(29.W))
+  // TARGFLASH0HTRANS[1:0] output TARGFLASH0, HTRANS
+  val TARGFLASH0HTRANS = Output(UInt(2.W))
+  // TARGFLASH0HSIZE[2:0] output TARGFLASH0, HSIZE
+  val TARGFLASH0HSIZE = Output(UInt(3.W))
+  // TARGFLASH0HBURST[2:0] output TARGFLASH0, HBURST
+  val TARGFLASH0HBURST = Output(UInt(3.W))
+  // TARGFLASH0HREADYMUX output TARGFLASH0, HREADYOUT
+  val TARGFLASH0HREADYMUX = Output(UInt(1.W))
 }
 
 class Gowin_EMPU_Module() extends Module {
@@ -156,6 +202,34 @@ class Gowin_EMPU_Module() extends Module {
   emcu.io.FCLK := clock
   emcu.io.PORESETN := reset
   emcu.io.SYSRESETN := reset
+
+  val core = IO(new Bundle {
+    val MTXHRESETN = Output(UInt(1.W))
+
+    val sram = new Gowin_EMPU_Bundle_SRAM();
+    val flash = new Gowin_EMPU_Bundle_FLASH();
+  })
+  core.MTXHRESETN <> emcu.io.MTXHRESETN
+
+  core.sram.data_in <> emcu.io.SRAM0RDATA
+  core.sram.address <> emcu.io.SRAM0ADDR
+  core.sram.write_enable <> emcu.io.SRAM0WREN
+  core.sram.data_out <> emcu.io.SRAM0WDATA
+  core.sram.output_enable <> emcu.io.SRAM0CS
+
+  core.flash.FLASHERR <> emcu.io.FLASHERR
+  core.flash.FLASHINT <> emcu.io.FLASHINT
+  core.flash.data <> emcu.io.TARGFLASH0HRDATA
+  core.flash.TARGFLASH0HRUSER <> emcu.io.TARGFLASH0HRUSER
+  core.flash.TARGFLASH0HRESP <> emcu.io.TARGFLASH0HRESP
+  core.flash.TARGFLASH0EXRESP <> emcu.io.TARGFLASH0EXRESP
+  core.flash.ready <> emcu.io.TARGFLASH0HREADYOUT
+  core.flash.TARGFLASH0HSEL <> emcu.io.TARGFLASH0HSEL
+  core.flash.address <> emcu.io.TARGFLASH0HADDR
+  core.flash.TARGFLASH0HTRANS <> emcu.io.TARGFLASH0HTRANS
+  core.flash.TARGFLASH0HSIZE <> emcu.io.TARGFLASH0HSIZE
+  core.flash.TARGFLASH0HBURST <> emcu.io.TARGFLASH0HBURST
+  core.flash.TARGFLASH0HREADYMUX <> emcu.io.TARGFLASH0HREADYMUX
 
   val peripherals = IO(new Bundle {
     val gpio = new Gowin_EMPU_Bundle_GPIO()

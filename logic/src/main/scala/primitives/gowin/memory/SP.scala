@@ -27,7 +27,7 @@ class SP extends BlackBox {
     val RESET = Input(Reset());
     // OCE Input 输出时钟使能信号，用于 pipline 模式，对
     // bypass 模式无效
-    val ORE = Input(UInt(1.W));
+    val OCE = Input(UInt(1.W));
     // BLKSEL[2:0] Input BSRAM块选择信号, 用于需要多个BSRAM存
     // 储单元级联实现容量扩展
     val BLKSEL = Input(UInt(1.W));
