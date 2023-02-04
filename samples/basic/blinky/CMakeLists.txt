@@ -17,6 +17,10 @@ list(APPEND ZEPHYR_EXTRA_MODULES
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(out_of_tree_board)
 
+list(GET BOARD_ROOT 0 BOARD_ROOT_0)
+set(BOARD_DIR ${BOARD_ROOT}/boards/${ARCH}/${BOARD})
+
+# message(FATAL_ERROR "Board: ${BOARD_ROOT}")
 set(app_logic_root_dir ${LOGIC_ROOT})
 set(app_logic_src_dir ${app_logic_root_dir}/platform/chisel)
 set(app_logic_build_dir ${CMAKE_CURRENT_BINARY_DIR}/app_logic)
@@ -34,8 +38,8 @@ ExternalProject_Add(
   && echo "#!/usr/bin/gw_sh" > ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_build_dir} -name "*.v" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_src_dir} -name "*.v" | grep -v _tmp.v | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
-  && find ${app_logic_src_dir} -name "*.cst" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
-  && find ${app_logic_src_dir} -name "*.sdc" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
+  && find ${BOARD_DIR} -name "*.cst" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
+  && find ${BOARD_DIR} -name "*.sdc" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && cat ${app_logic_src_dir}/chisel.gwsh >> ${app_logic_build_dir}/compile.gwsh
   && echo prepare gowin compile ...
   && cat ${app_logic_build_dir}/compile.gwsh
