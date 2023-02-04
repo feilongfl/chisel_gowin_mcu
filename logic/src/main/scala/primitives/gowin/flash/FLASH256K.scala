@@ -16,16 +16,16 @@ class FLASH256K extends BlackBox {
     // YADR[5:0]InputY 地址总线，用于选择一行存储单元中的某一列，一行由 64 列组成。
     val YADR = Input(UInt(6.W));
     // XEInputX 地址使能信号，当 XE 为 0 时，所有行地址均不使能。
-    val XEInputX = Input(UInt(1.W));
+    val XE = Input(UInt(1.W));
     // YEInputY 地址使能信号，当 YE 为 0 时，所有列地址均不使能。
-    val YEInputY = Input(UInt(1.W));
+    val YE = Input(UInt(1.W));
     // SEInput 检测放大器使能信号，高电平有效。
-    val SEInput = Input(UInt(1.W));
+    val SE = Input(UInt(1.W));
     // PROGInput 写信号，高电平有效。
-    val PROGInput = Input(UInt(1.W));
+    val PROG = Input(UInt(1.W));
     // ERASEInput 擦除信号，高电平有效。
-    val ERASEInput = Input(UInt(1.W));
+    val ERASE = Input(UInt(1.W));
     // NVSTRInputFlash 数据存储信号，高电平有效。
-    val NVSTRInputFlash = Input(UInt(1.W));
+    val NVSTR = Input(UInt(1.W));
   })
 }
