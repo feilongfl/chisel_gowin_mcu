@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cleanup
-        run: sed -i "s/%NAME%/test/g" build.sc
+        run: cd logic && sed -i "s/%NAME%/test/g" build.sc
       - name: Setup Scala
         uses: olafurpg/setup-scala@v10
         with:
@@ -22,6 +22,6 @@ jobs:
       - name: Cache Scala
         uses: coursier/cache-action@v5
       - name: SBT Test
-        run: sbt test
+        run: cd logic && sbt test
       - name: mill Test
-        run: mill _.test
+        run: cd logic && mill _.test
