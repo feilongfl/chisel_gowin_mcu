@@ -42,14 +42,18 @@ class Gowin_EMPU_FLASH256K extends Module {
   flash.io.ERASE := 0.U
   flash.io.NVSTR := 0.U
   flash.io.DIN := 0.U
+  emcu.FLASHERR := 0
+  emcu.FLASHINT := 0
+  emcu.TARGFLASH0HRESP := 0
+  emcu.TARGFLASH0HRUSER := 0
+  emcu.TARGFLASH0EXRESP := 0
 
-  // val address = VecInit(emcu.address.asBools)
-  // flash.io.XADR := address.slice(6, 12).asBools.asUInt
-  // flash.io.YADR := address.slice(0, 5).asBools.asUInt
-
-  flash.io <> DontCare
-  emcu <> DontCare
+  flash.io.XADR := emcu.address >> 6
+  flash.io.YADR := emcu.address
   emcu.data := flash.io.DOUT
+
+  flash.io.SE := DontCare
+  emcu.ready <> DontCare
 }
 
 class Gowin_EMPU(freq: UInt = 27000000.U) extends Module {
