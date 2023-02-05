@@ -1,0 +1,6 @@
+# Copyright (c) 2023 YuLong Yao <feilongphone@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_SZFPGA_GW1NSR4C
+	bool "Gowin EMPU on SZFPGA GW1NSR4C"
+	depends on SOC_GWEMPU
