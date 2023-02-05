@@ -36,6 +36,7 @@ class Gowin_EMPU_FLASH256K extends Module {
 
   val flash = Module(new FLASH256K)
 
+  // unuse port
   flash.io.XE := MTXHRESETN
   flash.io.YE := MTXHRESETN
   flash.io.PROG := 0.U
@@ -48,12 +49,27 @@ class Gowin_EMPU_FLASH256K extends Module {
   emcu.TARGFLASH0HRUSER := 0.U
   emcu.TARGFLASH0EXRESP := 0.U
 
+  // addr & data
   flash.io.XADR := emcu.address >> 6
   flash.io.YADR := emcu.address
   emcu.data := flash.io.DOUT
 
-  flash.io.SE := 1.U
-  emcu.ready := 1.U
+  // flash ctrl timing
+  // val ready = RegInit(0.U(1.W))
+
+  // flash.io.SE := 0.U
+
+  // emcu.TARGFLASH0HTRANS
+  // val trans = RegNext(emcu.TARGFLASH0HTRANS)
+  // emcu.TARGFLASH0HSEL
+  // val sel = RegNext(emcu.TARGFLASH0HSEL)
+  // val readyNext = RegNext(ready)
+
+  // val ctrl = RegNext((emcu.TARGFLASH0HTRANS ^ emcu.TARGFLASH0HSEL))
+
+  // flash.io.SE := RegNext(ctrl & trans & sel | readyNext)
+  flash.io.SE := emcu.TARGFLASH0HTRANS(1) & emcu.TARGFLASH0HSEL
+  emcu.ready := RegNext(RegNext(RegNext(flash.io.SE, 0.U)))
 }
 
 class Gowin_EMPU(freq: UInt = 27000000.U) extends Module {
@@ -63,9 +79,11 @@ class Gowin_EMPU(freq: UInt = 27000000.U) extends Module {
   mcu.core.sram <> sram.emcu
   sram.MTXHRESETN := mcu.core.MTXHRESETN
 
-  val flash = Module(new Gowin_EMPU_FLASH256K)
-  mcu.core.flash <> flash.emcu
-  flash.MTXHRESETN := mcu.core.MTXHRESETN
+  withReset(~reset.asBool()) {
+    val flash = Module(new Gowin_EMPU_FLASH256K)
+    mcu.core.flash <> flash.emcu
+    flash.MTXHRESETN := mcu.core.MTXHRESETN
+  }
 
   val gpio = IO(new Gowin_EMPU_Bundle_GPIO)
   mcu.peripherals.gpio <> gpio
