@@ -37,10 +37,9 @@ ExternalProject_Add(
   && popd
   && echo "#!/usr/bin/gw_sh" > ${app_logic_build_dir}/compile.gwsh
   && find ${app_logic_build_dir} -name "*.v" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
-  && find ${app_logic_src_dir} -name "*.v" | grep -v _tmp.v | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && find ${BOARD_DIR} -name "*.cst" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
   && find ${BOARD_DIR} -name "*.sdc" | sed -r "s/^/add_file /" >> ${app_logic_build_dir}/compile.gwsh
-  && cat ${app_logic_src_dir}/chisel.gwsh >> ${app_logic_build_dir}/compile.gwsh
+  && cat ${CMAKE_CURRENT_LIST_DIR}/logic/${BOARD}.gwsh >> ${app_logic_build_dir}/compile.gwsh
   && echo prepare gowin compile ...
   && cat ${app_logic_build_dir}/compile.gwsh
   && echo run gowin compile ...

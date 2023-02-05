@@ -5,7 +5,7 @@ import chisel3.util._
 import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
 import chisel3.experimental.Analog
 
-import gowin.ips.Gowin_EMPU
+import gowin.ipcores.cpu.gowin.empu.Gowin_EMPU
 import pio.{PIO_IIC, PIO_Uart, PIO_GPIO}
 
 class TangNano4k extends Module {

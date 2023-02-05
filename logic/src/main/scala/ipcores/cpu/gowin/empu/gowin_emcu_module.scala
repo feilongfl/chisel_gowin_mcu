@@ -1,4 +1,4 @@
-package gowin.ips
+package gowin.ipcores.cpu.gowin.empu
 
 import chisel3._
 import chisel3.util._
@@ -6,7 +6,9 @@ import chisel3.experimental.Analog
 
 import pio.{PIO_IIC, PIO_Uart, PIO_GPIO}
 
-class Gowin_EMPU_Top(gpio_width: Int = 16) extends BlackBox {
+class Gowin_EMPU_Top(gpio_width: Int = 16)
+    extends BlackBox
+    with HasBlackBoxPath {
   val io = IO(new Bundle {
     val sys_clk = Input(Clock())
     val reset_n = Input(Reset())
@@ -20,6 +22,8 @@ class Gowin_EMPU_Top(gpio_width: Int = 16) extends BlackBox {
     val uart0_txd = Output(UInt(1.W))
     val uart0_rxd = Input(UInt(1.W))
   })
+
+  addPath("./src/main/scala/ipcores/cpu/gowin/empu/gowin_empu/gowin_empu.v")
 }
 
 class Gowin_EMPU_Module(gpio_width: Int = 16) extends Module {
