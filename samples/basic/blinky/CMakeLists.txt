@@ -18,9 +18,9 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(out_of_tree_board)
 
 list(GET BOARD_ROOT 0 BOARD_ROOT_0)
-set(BOARD_DIR ${BOARD_ROOT}/boards/${ARCH}/${BOARD})
+set(BOARD_DIR ${BOARD_ROOT_0}/boards/${ARCH}/${BOARD})
+message(STATUS "FPGABoard: ${BOARD_DIR}")
 
-# message(FATAL_ERROR "Board: ${BOARD_ROOT}")
 set(app_logic_root_dir ${LOGIC_ROOT})
 set(app_logic_src_dir ${app_logic_root_dir}/platform/chisel)
 set(app_logic_build_dir ${CMAKE_CURRENT_BINARY_DIR}/app_logic)
