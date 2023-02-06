@@ -21,17 +21,26 @@ execute_process(
   OUTPUT_FILE ${PROJECT_ROOT}/build/app_logic/compile.gwsh
 )
 
-message(STATUS "Compile Verilog")
-execute_process(
-  COMMAND gw_sh compile.gwsh
-  WORKING_DIRECTORY ${PROJECT_ROOT}/build/app_logic
-)
-
+# message(STATUS "Compile Verilog")
+# execute_process(
+# COMMAND gw_sh compile.gwsh
+# WORKING_DIRECTORY ${PROJECT_ROOT}/build/app_logic
+# )
 set(DTC_OVERLAY_DIR ${PROJECT_ROOT}/build/app_logic/include)
 list(APPEND DTS_ROOT ${DTC_OVERLAY_DIR})
 
-message(STATUS "Generate DTS:" ${DTC_OVERLAY_FILE})
+message(STATUS "Generate DTS:" ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated)
 execute_process(
   COMMAND mkdir -p ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated
-  COMMAND cp ${LOGIC_DIR}/dts/${BOARD}.overlay ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated/logic.dts
+  COMMAND bash -c "mv *.dtsi ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated/"
+  WORKING_DIRECTORY ${PROJECT_ROOT}/build/app_logic
+)
+
+message(STATUS "Merge Logic DTS:" ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated/logic.dts)
+execute_process(
+  COMMAND bash -c "echo \"/* WARNING. THIS FILE IS AUTO-GENERATED. DO NOT MODIFY! */\" && ls *.dtsi | sed -r 's/.*/\#include \<generated\\/\\0\>/'"
+
+  OUTPUT_FILE ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated/logic.dts
+  WORKING_DIRECTORY ${DTC_OVERLAY_DIR}/dts/${ARCH}/generated/
+  COMMAND_ECHO STDOUT
 )
