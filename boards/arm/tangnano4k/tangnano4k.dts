@@ -5,7 +5,7 @@
  */
 
 /dts-v1/;
-#include <gowin/empu/gwempu_gw1nsr4c.dtsi>
+#include <gowin/empu/gwempu.dtsi>
 
 / {
 	model = "Gowin EMCU";
