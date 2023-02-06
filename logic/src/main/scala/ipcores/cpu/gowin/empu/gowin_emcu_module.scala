@@ -23,7 +23,8 @@ class Gowin_EMPU_Top(gpio_width: Int = 16)
     val uart0_rxd = Input(UInt(1.W))
   })
 
-  addPath("./src/main/scala/ipcores/cpu/gowin/empu/gowin_empu/gowin_empu.v")
+  addPath("./src/main/scala/ipcores/cpu/gowin/empu/gowin_empu.v")
+  addPath("./src/main/scala/ipcores/cpu/gowin/empu/gowin_empu.dtsi")
 }
 
 class Gowin_EMPU_Module(gpio_width: Int = 16) extends Module {
