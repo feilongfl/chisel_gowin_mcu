@@ -21,11 +21,11 @@ execute_process(
   OUTPUT_FILE ${PROJECT_ROOT}/build/app_logic/compile.gwsh
 )
 
-# message(STATUS "Compile Verilog")
-# execute_process(
-# COMMAND gw_sh compile.gwsh
-# WORKING_DIRECTORY ${PROJECT_ROOT}/build/app_logic
-# )
+message(STATUS "Compile Verilog")
+execute_process(
+  COMMAND gw_sh compile.gwsh
+  WORKING_DIRECTORY ${PROJECT_ROOT}/build/app_logic
+)
 set(DTC_OVERLAY_DIR ${PROJECT_ROOT}/build/app_logic/include)
 list(APPEND DTS_ROOT ${DTC_OVERLAY_DIR})
 
