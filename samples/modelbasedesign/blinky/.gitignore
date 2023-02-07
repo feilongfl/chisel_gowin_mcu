@@ -1,0 +1,5 @@
+slprj
+**/*_rtw/*
+
+!model/model_ert_rtw/model.c
+!model/model_ert_rtw/model.h
