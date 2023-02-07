@@ -7,10 +7,10 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 
-#include "model.h"
+#include "simulink_led.h"
 
 /* 1 msec */
-#define SLEEP_TIME_MS 1
+#define SLEEP_TIME_MS 1000
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
@@ -33,10 +33,10 @@ void main(void)
 	if (ret < 0) {
 		return;
 	}
-	model_initialize();
-	while (rtmGetErrorStatus(rtM) == (NULL)) {
-		model_step();
-		ret = gpio_pin_set_dt(&led, rtY.Led);
+	simulink_led_initialize();
+	while (rtmGetErrorStatus(simulink_led_M) == (NULL)) {
+		simulink_led_step();
+		ret = gpio_pin_set_dt(&led, simulink_led_Y.out_led);
 		if (ret < 0) {
 			return;
 		}

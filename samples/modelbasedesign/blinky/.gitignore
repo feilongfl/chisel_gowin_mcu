@@ -1,5 +1,6 @@
 slprj
 **/*_rtw/*
 
-!model/model_ert_rtw/model.c
-!model/model_ert_rtw/model.h
+# Store these for people don't have matlab
+!model/simulink_led_ert_rtw/simulink_led.c
+!model/simulink_led_ert_rtw/*.h

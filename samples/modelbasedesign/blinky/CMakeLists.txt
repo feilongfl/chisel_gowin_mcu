@@ -11,5 +11,5 @@ include(${PROJECT_ROOT}/cmake/project.cmake)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(led_blinky)
 
-target_include_directories(app PRIVATE model/model_ert_rtw)
-target_sources(app PRIVATE src/main.c model/model_ert_rtw/model.c)
+target_include_directories(app PRIVATE model/simulink_led_ert_rtw)
+target_sources(app PRIVATE src/main.c model/simulink_led_ert_rtw/simulink_led.c)
