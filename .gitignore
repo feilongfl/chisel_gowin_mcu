@@ -426,3 +426,7 @@ YAMLLint.txt
 
 #gowin
 app_logic-stamp
+
+# Matlab
+*.autosave
+*.slxc
