@@ -1,4 +1,9 @@
-%%% Led Blinky
+%
+% Copyright (c) 2023 YuLong Yao <feilongphone@gmail.com>
+%
+% SPDX-License-Identifier: Apache-2.0
+%
+% Led Blinky
 
 %% prepare project
 close all;
