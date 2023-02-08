@@ -1,0 +1,10 @@
+
+set_device GW1NSR-LV4CQN48PC7/I6
+set_option -top_module TangNano4k
+set_option -output_base_name chisel
+
+set_option -use_sspi_as_gpio 1
+set_option -use_mspi_as_gpio 1
+set_option -use_done_as_gpio 1
+
+run all

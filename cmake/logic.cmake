@@ -15,6 +15,12 @@ execute_process(
   WORKING_DIRECTORY ${LOGIC_DIR}
 )
 
+message(STATUS "Gowin Embedded io fix")
+execute_process(
+  COMMAND sed -i.bak -r "s/(input |output|inout )\\s+(\\w+hpram\\w+)/\\1 [0:0] \\2/" TangNano4k.v
+  WORKING_DIRECTORY ${PROJECT_ROOT}/build/app_logic
+)
+
 message(STATUS "Generate Gowin Compile Script")
 execute_process(
   COMMAND ${PROJECT_ROOT}/scripts/logic/gowin/gen_compilescript.bash ${PROJECT_ROOT} ${BOARD_DIR} ${BOARD} ${APPLICATION_SOURCE_DIR}
