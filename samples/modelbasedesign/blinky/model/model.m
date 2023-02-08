@@ -28,9 +28,13 @@ cs = getActiveConfigSet(h);
 switchTarget(cs, 'ert.tlc', []);
 cs.set_param('Solver', 'FixedStepAuto');
 cs.set_param('GenCodeOnly', 'on');
+cs.set_param('ProdHWDeviceType', 'ARM Compatible->ARM Cortex-M');
+% cs.set_param('ProdHWDeviceType', 'RISC-V->RV32I');
+% cs.set_param('ProdHWDeviceType', 'RISC-V->RV64I');
+
 % check config
 % openDialog(cs);
-% saveAs(cs,'model_config');
+% saveAs(cs, 'model_config');
 
 %% Generate C code
 rtwbuild(h);
