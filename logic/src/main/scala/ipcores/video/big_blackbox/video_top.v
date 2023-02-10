@@ -31,7 +31,7 @@ module video_top
     input      [9:0]  PIXDATA         ,
     input             PIXCLK          ,
     output            XCLK            ,
-    
+
     output     [0:0]  O_hpram_ck      ,
     output     [0:0]  O_hpram_ck_n    ,
     output     [0:0]  O_hpram_cs_n    ,
@@ -172,7 +172,7 @@ end
 always@(posedge I_clk or negedge I_rst_n)
 begin
     if(!I_rst_n)
-        cnt_vs<=0;
+        cnt_vs<=10'h1ff;
     else if(cnt_vs==10'h3ff)
         cnt_vs<=cnt_vs;
     else if(vs_r && !tp0_vs_in) //vs24 falling edge
@@ -182,16 +182,16 @@ begin
 end
 
 //==============================================================================
-OV2640_Controller u_OV2640_Controller
-(
-    .clk             (clk_12M),         // 24Mhz clock signal
-    .resend          (1'b0),            // Reset signal
-    .config_finished (), // Flag to indicate that the configuration is finished
-    .sioc            (SCL),             // SCCB interface - clock signal
-    .siod            (SDA),             // SCCB interface - data signal
-    .reset           (),       // RESET signal for OV7670
-    .pwdn            ()             // PWDN signal for OV7670
-);
+// OV2640_Controller u_OV2640_Controller
+// (
+//     .clk             (clk_12M),         // 24Mhz clock signal
+//     .resend          (1'b0),            // Reset signal
+//     .config_finished (), // Flag to indicate that the configuration is finished
+//     .sioc            (SCL),             // SCCB interface - clock signal
+//     .siod            (SDA),             // SCCB interface - data signal
+//     .reset           (),       // RESET signal for OV7670
+//     .pwdn            ()             // PWDN signal for OV7670
+// );
 
 always @(posedge PIXCLK or negedge I_rst_n) //I_clk
 begin

@@ -30,6 +30,18 @@
 		};
 	};
 
+	// i2c0 {
+	// 	status = "okay";
+	// 	compatible = "gpio-i2c";
+	// 	clock-frequency = <1000000>;
+
+	// 	#address-cells = <1>;
+	// 	#size-cells = <0>;
+
+	// 	scl-gpios = <&gpio 5 0>;
+	// 	sda-gpios = <&gpio 4 0>;
+	// };
+
 };
 
 // &uart0 {
@@ -39,4 +51,12 @@
 // 	pinctrl-0 = <&uart0_default>;
 // 	pinctrl-1 = <&uart0_sleep>;
 // 	pinctrl-names = "default", "sleep";
+// };
+
+// &i2c0 {
+// 	ov2640: ov2640@60 {
+// 		compatible = "ovti,ov2640";
+// 		reg = <0x60>;
+// 		reset-gpios = <&test_gpio 0 0>;
+// 	};
 // };

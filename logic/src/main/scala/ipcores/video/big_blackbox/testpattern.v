@@ -2,10 +2,10 @@
 // File name         : testpattern.v
 // Module name       : testpattern
 // Created by        : Caojie
-// Module Description: 
-//						I_mode[2:0] = "000" : color bar     
-//						I_mode[2:0] = "001" : net grid     
-//						I_mode[2:0] = "010" : gray         
+// Module Description:
+//						I_mode[2:0] = "000" : color bar
+//						I_mode[2:0] = "001" : net grid
+//						I_mode[2:0] = "010" : gray
 //						I_mode[2:0] = "011" : single color
 // ---------------------------------------------------------------------
 // Release history
@@ -17,28 +17,28 @@
 module testpattern
 (
 	input              I_pxl_clk   ,//pixel clock
-    input              I_rst_n     ,//low active 
+    input              I_rst_n     ,//low active
     input      [2:0]   I_mode      ,//data select
     input      [7:0]   I_single_r  ,
     input      [7:0]   I_single_g  ,
     input      [7:0]   I_single_b  ,
-    input      [11:0]  I_h_total   ,//hor total time 
+    input      [11:0]  I_h_total   ,//hor total time
     input      [11:0]  I_h_sync    ,//hor sync time
     input      [11:0]  I_h_bporch  ,//hor back porch
     input      [11:0]  I_h_res     ,//hor resolution
-    input      [11:0]  I_v_total   ,//ver total time 
-    input      [11:0]  I_v_sync    ,//ver sync time  
-    input      [11:0]  I_v_bporch  ,//ver back porch  
-    input      [11:0]  I_v_res     ,//ver resolution 
+    input      [11:0]  I_v_total   ,//ver total time
+    input      [11:0]  I_v_sync    ,//ver sync time
+    input      [11:0]  I_v_bporch  ,//ver back porch
+    input      [11:0]  I_v_res     ,//ver resolution
     input              I_hs_pol    ,//HS polarity , 0:负极性，1：正极性
     input              I_vs_pol    ,//VS polarity , 0:负极性，1：正极性
-    output             O_de        ,   
+    output             O_de        ,
     output reg         O_hs        ,//负极性
     output reg         O_vs        ,//负极性
-    output     [7:0]   O_data_r    ,    
+    output     [7:0]   O_data_r    ,
     output     [7:0]   O_data_g    ,
-    output     [7:0]   O_data_b    
-); 
+    output     [7:0]   O_data_b
+);
 
 //====================================================
 localparam N = 5; //delay N clocks
@@ -51,16 +51,16 @@ localparam	MAGENTA	= {8'd255 , 8'd0   , 8'd255 };
 localparam	RED		= {8'd0   , 8'd0   , 8'd255 };
 localparam	BLUE	= {8'd255 , 8'd0   , 8'd0   };
 localparam	BLACK	= {8'd0   , 8'd0   , 8'd0   };
-  
+
 //====================================================
 reg  [11:0]   V_cnt     ;
 reg  [11:0]   H_cnt     ;
-              
-wire          Pout_de_w    ;                          
+
+wire          Pout_de_w    ;
 wire          Pout_hs_w    ;
 wire          Pout_vs_w    ;
 
-reg  [N-1:0]  Pout_de_dn   ;                          
+reg  [N-1:0]  Pout_de_dn   ;
 reg  [N-1:0]  Pout_hs_dn   ;
 reg  [N-1:0]  Pout_vs_dn   ;
 
@@ -68,7 +68,7 @@ reg  [N-1:0]  Pout_vs_dn   ;
 wire 		  De_pos;
 wire 		  De_neg;
 wire 		  Vs_pos;
-	
+
 reg  [11:0]   De_vcnt     ;
 reg  [11:0]   De_hcnt     ;
 reg  [11:0]   De_hcnt_d1  ;
@@ -76,7 +76,7 @@ reg  [11:0]   De_hcnt_d2  ;
 
 //-------------------------
 //Color bar //8色彩条
-reg  [11:0]   Color_trig_num; 
+reg  [11:0]   Color_trig_num;
 reg           Color_trig    ;
 reg  [3:0]    Color_cnt     ;
 reg  [23:0]   Color_bar     ;
@@ -108,7 +108,7 @@ always@(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
 		V_cnt <= 12'd0;
-	else     
+	else
 		begin
 			if((V_cnt >= (I_v_total-1'b1)) && (H_cnt >= (I_h_total-1'b1)))
 				V_cnt <= 12'd0;
@@ -119,37 +119,37 @@ begin
 		end
 end
 
-//-------------------------------------------------------------    
+//-------------------------------------------------------------
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
-		H_cnt <=  12'd0; 
+		H_cnt <=  12'd0;
 	else if(H_cnt >= (I_h_total-1'b1))
-		H_cnt <=  12'd0 ; 
-	else 
-		H_cnt <=  H_cnt + 1'b1 ;           
+		H_cnt <=  12'd0 ;
+	else
+		H_cnt <=  H_cnt + 1'b1 ;
 end
 
 //-------------------------------------------------------------
 assign  Pout_de_w = ((H_cnt>=(I_h_sync+I_h_bporch))&(H_cnt<=(I_h_sync+I_h_bporch+I_h_res-1'b1)))&
                     ((V_cnt>=(I_v_sync+I_v_bporch))&(V_cnt<=(I_v_sync+I_v_bporch+I_v_res-1'b1))) ;
 assign  Pout_hs_w =  ~((H_cnt>=12'd0) & (H_cnt<=(I_h_sync-1'b1))) ;
-assign  Pout_vs_w =  ~((V_cnt>=12'd0) & (V_cnt<=(I_v_sync-1'b1))) ;  
+assign  Pout_vs_w =  ~((V_cnt>=12'd0) & (V_cnt<=(I_v_sync-1'b1))) ;
 
 //-------------------------------------------------------------
 always@(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
 		begin
-			Pout_de_dn  <= {N{1'b0}};                          
+			Pout_de_dn  <= {N{1'b0}};
 			Pout_hs_dn  <= {N{1'b1}};
-			Pout_vs_dn  <= {N{1'b1}}; 
+			Pout_vs_dn  <= {N{1'b1}};
 		end
-	else 
+	else
 		begin
-			Pout_de_dn  <= {Pout_de_dn[N-2:0],Pout_de_w};                          
+			Pout_de_dn  <= {Pout_de_dn[N-2:0],Pout_de_w};
 			Pout_hs_dn  <= {Pout_hs_dn[N-2:0],Pout_hs_w};
-			Pout_vs_dn  <= {Pout_vs_dn[N-2:0],Pout_vs_w}; 
+			Pout_vs_dn  <= {Pout_vs_dn[N-2:0],Pout_vs_w};
 		end
 end
 
@@ -158,12 +158,12 @@ assign O_de = Pout_de_dn[4];//注意与数据对齐
 always@(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
-		begin                        
+		begin
 			O_hs  <= 1'b1;
-			O_vs  <= 1'b1; 
+			O_vs  <= 1'b1;
 		end
-	else 
-		begin                         
+	else
+		begin
 			O_hs  <= I_hs_pol ? ~Pout_hs_dn[3] : Pout_hs_dn[3] ;
 			O_vs  <= I_vs_pol ? ~Pout_vs_dn[3] : Pout_vs_dn[3] ;
 		end
@@ -189,7 +189,7 @@ end
 
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
-	if(!I_rst_n) 
+	if(!I_rst_n)
 		De_vcnt <= 12'd0;
 	else if (Vs_pos == 1'b1)
 		De_vcnt <= 12'd0;
@@ -218,7 +218,7 @@ always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
 	if(!I_rst_n)
 		Color_trig <= 1'b0;
-	else if (De_hcnt == (Color_trig_num-1'b1)) 
+	else if (De_hcnt == (Color_trig_num-1'b1))
 		Color_trig <= 1'b1;
 	else
 		Color_trig <= 1'b0;
@@ -322,15 +322,18 @@ end
 assign Single_color = {I_single_b,I_single_g,I_single_r};
 
 //============================================================
-assign Data_sel = (I_mode[2:0] == 3'b000) ? Color_bar		: 
-                  (I_mode[2:0] == 3'b001) ? Net_grid 		: 
-                  (I_mode[2:0] == 3'b010) ? Gray_d1    		: 
-				  (I_mode[2:0] == 3'b011) ? Single_color	: GREEN;
+// assign Data_sel = (I_mode[2:0] == 3'b000) ? Color_bar		:
+//                   (I_mode[2:0] == 3'b001) ? Net_grid 		:
+//                   (I_mode[2:0] == 3'b010) ? Gray_d1    		:
+// 				  (I_mode[2:0] == 3'b011) ? Single_color	: GREEN;
+
+// assign Data_sel = Color_bar;
+assign Data_sel = Single_color;
 
 //---------------------------------------------------
 always @(posedge I_pxl_clk or negedge I_rst_n)
 begin
-	if(!I_rst_n) 
+	if(!I_rst_n)
 		Data_tmp <= 24'd0;
 	else
 		Data_tmp <= Data_sel;
@@ -340,5 +343,4 @@ assign O_data_r = Data_tmp[ 7: 0];
 assign O_data_g = Data_tmp[15: 8];
 assign O_data_b = Data_tmp[23:16];
 
-endmodule       
-              
+endmodule

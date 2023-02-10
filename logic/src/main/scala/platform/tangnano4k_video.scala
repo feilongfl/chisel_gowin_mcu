@@ -9,10 +9,37 @@ import gowin.ipcores.cpu.gowin.empu.Gowin_EMPU
 import gowin.ipcores.cpu.gowin.video.video_top
 import pio.{PIO_IIC, PIO_Uart, PIO_GPIO}
 
+class GPIO_IIC extends BlackBox with HasBlackBoxInline {
+  val io = IO(new Bundle {
+    val gpio_sda = Input(UInt(1.W))
+    val gpio_scl = Input(UInt(1.W))
+
+    val scl = Analog(1.W)
+    val sda = Analog(1.W)
+  })
+
+  setInline(
+    "gpio_iic.v",
+    """
+  |module GPIO_IIC (
+  |  input gpio_sda,
+  |  input gpio_scl,
+  |  inout scl,
+  |  inout sda
+  |);
+  |
+  |  assign scl = (gpio_scl == 1)? 1'bz : 1'b0;
+  |  assign sda = (gpio_sda == 1)? 1'bz : 1'b0;
+  |
+  |endmodule
+  |""".stripMargin
+  )
+}
+
 class TangNano4k extends Module {
   // debug led
   val led = IO(Output(UInt(1.W)))
-  // val iic = IO(new PIO_IIC())
+  val iic = IO(new PIO_IIC())
   val uart_tx = IO(Output(UInt(1.W)))
 
   // video port
@@ -20,8 +47,8 @@ class TangNano4k extends Module {
   val I_rst_n = Input(Reset())
 
   // val O_led = Output(UInt(2.W))
-  val SDA = IO(Analog(1.W))
-  val SCL = IO(Analog(1.W))
+  // val iic_data = IO(Output(UInt(1.W)))
+  // val iic_clock = IO(Output(UInt(1.W)))
   val VSYNC = IO(Input(UInt(1.W)))
   val HREF = IO(Input(UInt(1.W)))
 
@@ -47,8 +74,8 @@ class TangNano4k extends Module {
   bbb.io.I_rst_n := reset
 
   bbb.io.O_led <> DontCare
-  bbb.io.SDA <> SDA
-  bbb.io.SCL <> SCL
+  bbb.io.SDA <> DontCare
+  bbb.io.SCL <> DontCare
   bbb.io.VSYNC <> VSYNC
   bbb.io.HREF <> HREF
   bbb.io.PIXDATA <> PIXDATA
@@ -73,8 +100,16 @@ class TangNano4k extends Module {
     led := emcu.gpio.out & 0x01.U
     emcu.gpio <> DontCare
 
-    emcu.iic <> DontCare
+    val gpio_iic = Module(new GPIO_IIC)
+    gpio_iic.io.gpio_sda := (emcu.gpio.out >> 1.U) & 0x01.U
+    gpio_iic.io.gpio_scl := (emcu.gpio.out >> 2.U) & 0x01.U
+    gpio_iic.io.scl <> iic.clock
+    gpio_iic.io.sda <> iic.data
+    // iic_data := (emcu.gpio.out >> 1.U) & 0x01.U
+    // iic_clock := (emcu.gpio.out >> 2.U) & 0x01.U
+
     // iic <> emcu.iic
+    emcu.iic <> DontCare
     uart_tx <> emcu.uart.tx
     emcu.uart.rx <> DontCare
   }
