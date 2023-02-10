@@ -148,8 +148,8 @@ testpattern testpattern_inst
     .I_single_b  (8'd0               ),                  //800x600    //1024x768   //1280x720
     .I_h_total   (16'd1650           ),//hor total time  // 16'd1056  // 16'd1344  // 16'd1650
     .I_h_sync    (16'd40             ),//hor sync time   // 16'd128   // 16'd136   // 16'd40
-    .I_h_bporch  (16'd220            ),//hor back porch  // 16'd88    // 16'd160   // 16'd220
-    .I_h_res     (16'd640            ),//hor resolution  // 16'd800   // 16'd1024  // 16'd1280
+    .I_h_bporch  (16'd60             ),//hor back porch  // 16'd88    // 16'd160   // 16'd220
+    .I_h_res     (16'd800            ),//hor resolution  // 16'd800   // 16'd1024  // 16'd1280
     .I_v_total   (16'd750            ),//ver total time  // 16'd628   // 16'd806   // 16'd750
     .I_v_sync    (16'd5              ),//ver sync time   // 16'd4     // 16'd6     // 16'd5
     .I_v_bporch  (16'd20             ),//ver back porch  // 16'd23    // 16'd29    // 16'd20
@@ -300,14 +300,14 @@ syn_gen syn_gen_inst
     .I_pxl_clk   (pix_clk         ),//40MHz      //65MHz      //74.25MHz
     .I_rst_n     (hdmi_rst_n      ),//800x600    //1024x768   //1280x720
     .I_h_total   (16'd1650        ),// 16'd1056  // 16'd1344  // 16'd1650
-    .I_h_sync    (16'd40          ),// 16'd128   // 16'd136   // 16'd40
-    .I_h_bporch  (16'd220         ),// 16'd88    // 16'd160   // 16'd220
-    .I_h_res     (16'd1280        ),// 16'd800   // 16'd1024  // 16'd1280
-    .I_v_total   (16'd750         ),// 16'd628   // 16'd806   // 16'd750
-    .I_v_sync    (16'd5           ),// 16'd4     // 16'd6     // 16'd5
-    .I_v_bporch  (16'd20          ),// 16'd23    // 16'd29    // 16'd20
-    .I_v_res     (16'd720         ),// 16'd600   // 16'd768   // 16'd720
-    .I_rd_hres   (16'd640         ),
+    .I_h_sync    (16'd128          ),// 16'd128   // 16'd136   // 16'd40
+    .I_h_bporch  (16'd88         ),// 16'd88    // 16'd160   // 16'd220
+    .I_h_res     (16'd800        ),// 16'd800   // 16'd1024  // 16'd1280
+    .I_v_total   (16'd628         ),// 16'd628   // 16'd806   // 16'd750
+    .I_v_sync    (16'd4           ),// 16'd4     // 16'd6     // 16'd5
+    .I_v_bporch  (16'd23          ),// 16'd23    // 16'd29    // 16'd20
+    .I_v_res     (16'd600         ),// 16'd600   // 16'd768   // 16'd720
+    .I_rd_hres   (16'd640          ),
     .I_rd_vres   (16'd480         ),
     .I_hs_pol    (1'b1            ),//HS polarity , 0:负极性，1：正极性
     .I_vs_pol    (1'b1            ),//VS polarity , 0:负极性，1：正极性

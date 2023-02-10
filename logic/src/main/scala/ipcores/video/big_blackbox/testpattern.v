@@ -74,28 +74,6 @@ reg  [11:0]   De_hcnt     ;
 reg  [11:0]   De_hcnt_d1  ;
 reg  [11:0]   De_hcnt_d2  ;
 
-//-------------------------
-//Color bar //8色彩条
-reg  [11:0]   Color_trig_num;
-reg           Color_trig    ;
-reg  [3:0]    Color_cnt     ;
-reg  [23:0]   Color_bar     ;
-
-//----------------------------
-//Net grid //32网格
-reg           Net_h_trig;
-reg           Net_v_trig;
-wire [1:0]    Net_pos   ;
-reg  [23:0]   Net_grid  ;
-
-//----------------------------
-//Gray  //黑白灰阶
-reg  [23:0]   Gray;
-reg  [23:0]   Gray_d1;
-
-//-----------------------------
-wire [23:0]   Single_color;
-
 //-------------------------------
 wire [23:0]   Data_sel;
 
@@ -200,135 +178,9 @@ begin
 end
 
 //---------------------------------------------------
-//Color bar
-//---------------------------------------------------
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Color_trig_num <= 12'd0;
-	else if (Pout_de_dn[1] == 1'b0)
-		Color_trig_num <= I_h_res[11:3]; //8色彩条宽度
-	else if ((Color_trig == 1'b1) && (Pout_de_dn[1] == 1'b1))
-		Color_trig_num <= Color_trig_num + I_h_res[11:3];
-	else
-		Color_trig_num <= Color_trig_num;
-end
-
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Color_trig <= 1'b0;
-	else if (De_hcnt == (Color_trig_num-1'b1))
-		Color_trig <= 1'b1;
-	else
-		Color_trig <= 1'b0;
-end
-
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Color_cnt <= 3'd0;
-	else if (Pout_de_dn[1] == 1'b0)
-		Color_cnt <= 3'd0;
-	else if ((Color_trig == 1'b1) && (Pout_de_dn[1] == 1'b1))
-		Color_cnt <= Color_cnt + 1'b1;
-	else
-		Color_cnt <= Color_cnt;
-end
-
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Color_bar <= 24'd0;
-	else if(Pout_de_dn[2] == 1'b1)
-		case(Color_cnt)
-			3'd0	:	Color_bar	<=	WHITE  ;
-			3'd1	:	Color_bar	<=	YELLOW ;
-			3'd2	:	Color_bar	<=	CYAN   ;
-			3'd3	:	Color_bar	<=	GREEN  ;
-			3'd4	:	Color_bar	<=	MAGENTA;
-			3'd5	:	Color_bar	<=	RED    ;
-			3'd6	:	Color_bar	<=	BLUE   ;
-			3'd7	:	Color_bar	<=	BLACK  ;
-			default	:	Color_bar	<=	BLACK  ;
-		endcase
-	else
-		Color_bar	<=	BLACK  ;
-end
-
-//---------------------------------------------------
-//Net grid
-//---------------------------------------------------
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Net_h_trig <= 1'b0;
-	else if (((De_hcnt[4:0] == 5'd0) || (De_hcnt == (I_h_res-1'b1))) && (Pout_de_dn[1] == 1'b1))
-		Net_h_trig <= 1'b1;
-	else
-		Net_h_trig <= 1'b0;
-end
-
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Net_v_trig <= 1'b0;
-	else if (((De_vcnt[4:0] == 5'd0) || (De_vcnt == (I_v_res-1'b1))) && (Pout_de_dn[1] == 1'b1))
-		Net_v_trig <= 1'b1;
-	else
-		Net_v_trig <= 1'b0;
-end
-
-assign Net_pos = {Net_v_trig,Net_h_trig};
-
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Net_grid <= 24'd0;
-	else if(Pout_de_dn[2] == 1'b1)
-		case(Net_pos)
-			2'b00	:	Net_grid	<=	BLACK  ;
-			2'b01	:	Net_grid	<=	RED    ;
-			2'b10	:	Net_grid	<=	RED    ;
-			2'b11	:	Net_grid	<=	RED    ;
-			default	:	Net_grid	<=	BLACK  ;
-		endcase
-	else
-		Net_grid	<=	BLACK  ;
-end
-
-//---------------------------------------------------
-//Gray
-//---------------------------------------------------
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Gray <= 24'd0;
-	else
-		Gray <= {De_hcnt[7:0],De_hcnt[7:0],De_hcnt[7:0]};
-end
-
-always @(posedge I_pxl_clk or negedge I_rst_n)
-begin
-	if(!I_rst_n)
-		Gray_d1 <= 24'd0;
-	else
-		Gray_d1 <= Gray;
-end
-
-//---------------------------------------------------
 //Single color
 //---------------------------------------------------
-assign Single_color = {I_single_b,I_single_g,I_single_r};
-
-//============================================================
-// assign Data_sel = (I_mode[2:0] == 3'b000) ? Color_bar		:
-//                   (I_mode[2:0] == 3'b001) ? Net_grid 		:
-//                   (I_mode[2:0] == 3'b010) ? Gray_d1    		:
-// 				  (I_mode[2:0] == 3'b011) ? Single_color	: GREEN;
-
-// assign Data_sel = Color_bar;
-assign Data_sel = Single_color;
+assign Data_sel = {I_single_b,I_single_g,I_single_r};
 
 //---------------------------------------------------
 always @(posedge I_pxl_clk or negedge I_rst_n)
