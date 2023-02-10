@@ -23,9 +23,6 @@ module video_top
 (
     input             I_clk           , //27Mhz
     input             I_rst_n         ,
-    output     [1:0]  O_led           ,
-    inout             SDA             ,
-    inout             SCL             ,
     input             VSYNC           ,
     input             HREF            ,
     input      [9:0]  PIXDATA         ,
@@ -47,7 +44,6 @@ module video_top
 
 //==================================================
 reg  [31:0] run_cnt;
-wire        running;
 
 //--------------------------
 wire        tp0_vs_in  ;
@@ -117,23 +113,6 @@ wire pix_clk;
 
 wire clk_12M;
 
-//===================================================
-//LED test
-always @(posedge I_clk or negedge I_rst_n) //I_clk
-begin
-    if(!I_rst_n)
-        run_cnt <= 32'd0;
-    else if(run_cnt >= 32'd27_000_000)
-        run_cnt <= 32'd0;
-    else
-        run_cnt <= run_cnt + 1'b1;
-end
-
-assign  running = (run_cnt < 32'd13_500_000) ? 1'b1 : 1'b0;
-
-assign  O_led[0] = running;
-assign  O_led[1] = ~init_calib;
-
 assign  XCLK = clk_12M;
 
 //===========================================================================
@@ -180,18 +159,6 @@ begin
     else
         cnt_vs<=cnt_vs;
 end
-
-//==============================================================================
-// OV2640_Controller u_OV2640_Controller
-// (
-//     .clk             (clk_12M),         // 24Mhz clock signal
-//     .resend          (1'b0),            // Reset signal
-//     .config_finished (), // Flag to indicate that the configuration is finished
-//     .sioc            (SCL),             // SCCB interface - clock signal
-//     .siod            (SDA),             // SCCB interface - data signal
-//     .reset           (),       // RESET signal for OV7670
-//     .pwdn            ()             // PWDN signal for OV7670
-// );
 
 always @(posedge PIXCLK or negedge I_rst_n) //I_clk
 begin

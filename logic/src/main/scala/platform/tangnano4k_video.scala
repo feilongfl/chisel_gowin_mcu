@@ -46,9 +46,6 @@ class TangNano4k extends Module {
   val I_clk = Input(Clock())
   val I_rst_n = Input(Reset())
 
-  // val O_led = Output(UInt(2.W))
-  // val iic_data = IO(Output(UInt(1.W)))
-  // val iic_clock = IO(Output(UInt(1.W)))
   val VSYNC = IO(Input(UInt(1.W)))
   val HREF = IO(Input(UInt(1.W)))
 
@@ -73,9 +70,6 @@ class TangNano4k extends Module {
   bbb.io.I_clk := clock
   bbb.io.I_rst_n := reset
 
-  bbb.io.O_led <> DontCare
-  bbb.io.SDA <> DontCare
-  bbb.io.SCL <> DontCare
   bbb.io.VSYNC <> VSYNC
   bbb.io.HREF <> HREF
   bbb.io.PIXDATA <> PIXDATA

@@ -9,9 +9,6 @@ class video_top extends BlackBox with HasBlackBoxPath {
     val I_clk = Input(Clock())
     val I_rst_n = Input(Reset())
 
-    val O_led = Output(UInt(2.W))
-    val SDA = Analog(1.W)
-    val SCL = Analog(1.W)
     val VSYNC = Input(UInt(1.W))
     val HREF = Input(UInt(1.W))
 
