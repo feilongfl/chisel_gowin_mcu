@@ -336,6 +336,7 @@ DVI_TX_Top DVI_TX_Top_inst
     .I_rst_n       (hdmi_rst_n   ),  //asynchronous reset, low active
     .I_serial_clk  (serial_clk    ),
     .I_rgb_clk     (pix_clk       ),  //pixel clock
+    
     .I_rgb_vs      (rgb_vs        ),
     .I_rgb_hs      (rgb_hs        ),
     .I_rgb_de      (rgb_de        ),
