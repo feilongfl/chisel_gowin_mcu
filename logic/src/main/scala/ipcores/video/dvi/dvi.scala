@@ -3,6 +3,11 @@ package ipcores.video.dvi
 import chisel3._
 import chisel3.util._
 
+class DiffPair extends Bundle {
+  val p = Bool()
+  val n = Bool()
+}
+
 class VideoDviTmds extends Bundle {
   val clock = Output(UInt(10.W))
   val red = Output(UInt(10.W))
@@ -21,8 +26,8 @@ class VideoRawPort extends Bundle {
 }
 
 class VideoRawToDviTmds extends Module {
-  val raw = IO(Flipped(VideoRawPort))
-  val dvi = IO(VideoDviTmds)
+  val raw = IO(Flipped(new VideoRawPort()))
+  val dvi = IO(new VideoDviTmds)
 
   val tmdsr_enc = Module(new TMDSEncoder)
   tmdsr_enc.io.en := raw.de
@@ -52,11 +57,6 @@ class Tmds extends Bundle {
   val blue = Bool()
 }
 
-class DiffPair extends Bundle {
-  val p = Bool()
-  val n = Bool()
-}
-
 class TMDSDiff extends Bundle {
   val clk = new DiffPair()
   val red = new DiffPair()
@@ -73,6 +73,30 @@ class LVDS_OBUF extends BlackBox {
 }
 
 class TLVDS_OBUF extends LVDS_OBUF {}
+
+/* OSER10 : serializer 10:1*/
+class OSER10
+    extends BlackBox(
+      Map("GSREN" -> "false", "LSREN" -> "true")
+    ) {
+  val io = IO(new Bundle {
+    val Q = Output(Bool()) // OSER10 data output signal
+    val D0 = Input(Bool())
+    val D1 = Input(Bool())
+    val D2 = Input(Bool())
+    val D3 = Input(Bool())
+    val D4 = Input(Bool())
+    val D5 = Input(Bool())
+    val D6 = Input(Bool())
+    val D7 = Input(Bool())
+    val D8 = Input(Bool())
+    val D9 = Input(Bool()) //  OSER10 data input signal
+    val PCLK = Input(Clock()) // Primary clock input signal
+    val FCLK = Input(Clock()) // High speed clock input signal
+    val RESET = Input(Reset()) // Asynchronous reset input signal,
+    // active-high.
+  })
+}
 
 class Oser10Module extends Module {
   val io = IO(new Bundle {
@@ -99,50 +123,50 @@ class Oser10Module extends Module {
 }
 
 class GowinHDMIChannel extends Module {
-  val data = Input(UInt(10.W))
-  val out = Output(DiffPair())
-  val serclk = Input(Clock())
+  val data = IO(Input(UInt(10.W)))
+  val out = IO(Output(new DiffPair()))
+  val serclk = IO(Input(Clock()))
 
   val ser10 = Module(new Oser10Module)
-  ser10.data := data
-  ser10.fclk := serclk
+  ser10.io.data := data
+  ser10.io.fclk := serclk
 
-  val lvds = Module(TLVDS_OBUF())
-  lvds.I := ser10.q
-  out.P := lvds.O
-  out.N := lvds.OB
+  val lvds = Module(new TLVDS_OBUF())
+  lvds.io.I := ser10.io.q
+  out.p := lvds.io.O
+  out.n := lvds.io.OB
 }
 
 class GowinHDMI extends Module {
   val serclk = IO(Input(Clock()))
 
-  val tmds_in = IO(new VideoDviTmds)
-  val tmds_out = IO(new TMDSDiff)
+  val tmds_in = IO(Flipped(new VideoDviTmds))
+  val tmds_out = IO(Output(new TMDSDiff))
 
   val channel_clock = Module(new GowinHDMIChannel)
   channel_clock.data := tmds_in.clock
-  channel_clock.serclk := tmds_in.serclk
+  channel_clock.serclk := serclk
   tmds_out.clk := channel_clock.out
 
   val channel_red = Module(new GowinHDMIChannel)
   channel_red.data := tmds_in.red
-  channel_red.serclk := tmds_in.serclk
-  tmds_out.clk := channel_red.out
+  channel_red.serclk := serclk
+  tmds_out.red := channel_red.out
 
   val channel_green = Module(new GowinHDMIChannel)
   channel_green.data := tmds_in.green
-  channel_green.serclk := tmds_in.serclk
-  tmds_out.clk := channel_green.out
+  channel_green.serclk := serclk
+  tmds_out.green := channel_green.out
 
   val channel_blue = Module(new GowinHDMIChannel)
   channel_blue.data := tmds_in.blue
-  channel_blue.serclk := tmds_in.serclk
-  tmds_out.clk := channel_blue.out
+  channel_blue.serclk := serclk
+  tmds_out.blue := channel_blue.out
 }
 
 class VideoRawToGowinHDMI extends Module {
-  val raw = IO(Flipped(VideoRawPort))
-  val hdmi = IO(new TMDSDiff)
+  val raw = IO(Flipped(new VideoRawPort))
+  val hdmi = IO(Output(new TMDSDiff))
   val serclk = IO(Input(Clock()))
 
   val encode = Module(new VideoRawToDviTmds)

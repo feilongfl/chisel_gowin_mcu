@@ -23,10 +23,16 @@ class video_top extends BlackBox with HasBlackBoxPath {
     val IO_hpram_dq = Analog(8.W)
     val IO_hpram_rwds = Analog(1.W)
 
-    val O_tmds_clk_p = Output(UInt(1.W))
-    val O_tmds_clk_n = Output(UInt(1.W))
-    val O_tmds_data_p = Output(UInt(3.W))
-    val O_tmds_data_n = Output(UInt(3.W))
+    // val O_tmds_clk_p = Output(UInt(1.W))
+    // val O_tmds_clk_n = Output(UInt(1.W))
+    // val O_tmds_data_p = Output(UInt(3.W))
+    // val O_tmds_data_n = Output(UInt(3.W))
+
+    val serial_clk = Output(Clock())
+    val rgb_vs = Output(UInt(1.W))
+    val rgb_hs = Output(UInt(1.W))
+    val rgb_de = Output(UInt(1.W))
+    val rgb_data = Output(UInt(24.W))
   })
 
   addPath("./src/main/scala/ipcores/video/big_blackbox/video_top.v")

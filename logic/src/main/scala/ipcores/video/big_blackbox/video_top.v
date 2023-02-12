@@ -36,10 +36,17 @@ module video_top
     inout      [7:0]  IO_hpram_dq     ,
     inout      [0:0]  IO_hpram_rwds   ,
 
-    output            O_tmds_clk_p    ,
-    output            O_tmds_clk_n    ,
-    output     [2:0]  O_tmds_data_p   ,//{r,g,b}
-    output     [2:0]  O_tmds_data_n
+    // output            O_tmds_clk_p    ,
+    // output            O_tmds_clk_n    ,
+    // output     [2:0]  O_tmds_data_p   ,//{r,g,b}
+    // output     [2:0]  O_tmds_data_n
+
+    output  serial_clk    ,
+
+    output rgb_vs        ,
+    output rgb_hs        ,
+    output rgb_de        ,
+    output [23:0]rgb_data
 );
 
 //==================================================
@@ -331,23 +338,23 @@ CLKDIV u_clkdiv
 );
 defparam u_clkdiv.DIV_MODE="5";
 
-DVI_TX_Top DVI_TX_Top_inst
-(
-    .I_rst_n       (hdmi_rst_n   ),  //asynchronous reset, low active
-    .I_serial_clk  (serial_clk    ),
-    .I_rgb_clk     (pix_clk       ),  //pixel clock
-    
-    .I_rgb_vs      (rgb_vs        ),
-    .I_rgb_hs      (rgb_hs        ),
-    .I_rgb_de      (rgb_de        ),
-    .I_rgb_r       (rgb_data[23:16]    ),
-    .I_rgb_g       (rgb_data[15: 8]    ),
-    .I_rgb_b       (rgb_data[ 7: 0]    ),
-    .O_tmds_clk_p  (O_tmds_clk_p  ),
-    .O_tmds_clk_n  (O_tmds_clk_n  ),
-    .O_tmds_data_p (O_tmds_data_p ),  //{r,g,b}
-    .O_tmds_data_n (O_tmds_data_n )
-);
+// DVI_TX_Top DVI_TX_Top_inst
+// (
+//     .I_rst_n       (hdmi_rst_n   ),  //asynchronous reset, low active
+//     .I_serial_clk  (serial_clk    ),
+//     .I_rgb_clk     (pix_clk       ),  //pixel clock
+
+//     .I_rgb_vs      (rgb_vs        ),
+//     .I_rgb_hs      (rgb_hs        ),
+//     .I_rgb_de      (rgb_de        ),
+//     .I_rgb_r       (rgb_data[23:16]    ),
+//     .I_rgb_g       (rgb_data[15: 8]    ),
+//     .I_rgb_b       (rgb_data[ 7: 0]    ),
+//     .O_tmds_clk_p  (O_tmds_clk_p  ),
+//     .O_tmds_clk_n  (O_tmds_clk_n  ),
+//     .O_tmds_data_p (O_tmds_data_p ),  //{r,g,b}
+//     .O_tmds_data_n (O_tmds_data_n )
+// );
 
 
 
