@@ -86,17 +86,19 @@ class TangNano4k extends Module {
   // bbb.io.O_tmds_data_p <> O_tmds_data_p
   // bbb.io.O_tmds_data_n <> O_tmds_data_n
 
-  val hdmi = IO(Output(new ipcores.video.dvi.TMDSDiff))
+  withReset(!reset.asBool()) {
+    val hdmi = IO(Output(new ipcores.video.dvi.TMDSDiff))
 
-  val hdmi_encoder = Module(new ipcores.video.dvi.VideoRawToGowinHDMI)
-  hdmi_encoder.serclk := bbb.io.serial_clk
-  hdmi_encoder.raw.red := (bbb.io.rgb_data >> 16) & 0xff.U
-  hdmi_encoder.raw.green := (bbb.io.rgb_data >> 8) & 0xff.U
-  hdmi_encoder.raw.blue := (bbb.io.rgb_data) & 0xff.U
-  hdmi_encoder.raw.vs := bbb.io.rgb_vs
-  hdmi_encoder.raw.hs := bbb.io.rgb_hs
-  hdmi_encoder.raw.de := bbb.io.rgb_de
-  hdmi_encoder.hdmi <> hdmi
+    val hdmi_encoder = Module(new ipcores.video.dvi.VideoRawToGowinHDMI)
+    hdmi_encoder.serclk := bbb.io.serial_clk
+    hdmi_encoder.raw.red := (bbb.io.rgb_data >> 16) & 0xff.U
+    hdmi_encoder.raw.green := (bbb.io.rgb_data >> 8) & 0xff.U
+    hdmi_encoder.raw.blue := (bbb.io.rgb_data) & 0xff.U
+    hdmi_encoder.raw.vs := bbb.io.rgb_vs
+    hdmi_encoder.raw.hs := bbb.io.rgb_hs
+    hdmi_encoder.raw.de := bbb.io.rgb_de
+    hdmi_encoder.hdmi <> hdmi
+  }
 
   withReset(reset.asBool()) {
     // xtal freq: 27 MHz
