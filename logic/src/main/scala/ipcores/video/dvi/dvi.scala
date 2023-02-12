@@ -151,7 +151,7 @@ class GowinHDMI extends Module {
   val channel_red = Module(new GowinHDMIChannel)
   channel_red.data := tmds_in.red
   channel_red.serclk := serclk
-  tmds_out.red := channel_red.out
+  // tmds_out.red := channel_red.out
 
   val channel_green = Module(new GowinHDMIChannel)
   channel_green.data := tmds_in.green
@@ -161,7 +161,11 @@ class GowinHDMI extends Module {
   val channel_blue = Module(new GowinHDMIChannel)
   channel_blue.data := tmds_in.blue
   channel_blue.serclk := serclk
-  tmds_out.blue := channel_blue.out
+  // tmds_out.blue := channel_blue.out
+
+  tmds_out.blue := channel_red.out
+  tmds_out.red := channel_blue.out
+
 }
 
 class VideoRawToGowinHDMI extends Module {
