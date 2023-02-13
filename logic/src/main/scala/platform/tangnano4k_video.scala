@@ -89,14 +89,21 @@ class TangNano4k extends Module {
   withReset(!reset.asBool()) {
     val hdmi = IO(Output(new ipcores.video.dvi.TMDSDiff))
 
+    val regred = RegNext((bbb.io.rgb_data >> 16) & 0xff.U)
+    val reggreen = RegNext((bbb.io.rgb_data >> 8) & 0xff.U)
+    val regblue = RegNext((bbb.io.rgb_data) & 0xff.U)
+    val regvs = RegNext(bbb.io.rgb_vs)
+    val reghs = RegNext(bbb.io.rgb_hs)
+    val regde = RegNext(bbb.io.rgb_de)
+
     val hdmi_encoder = Module(new ipcores.video.dvi.VideoRawToGowinHDMI)
     hdmi_encoder.serclk := bbb.io.serial_clk
-    hdmi_encoder.raw.red := (bbb.io.rgb_data >> 16) & 0xff.U
-    hdmi_encoder.raw.green := (bbb.io.rgb_data >> 8) & 0xff.U
-    hdmi_encoder.raw.blue := (bbb.io.rgb_data) & 0xff.U
-    hdmi_encoder.raw.vs := bbb.io.rgb_vs
-    hdmi_encoder.raw.hs := bbb.io.rgb_hs
-    hdmi_encoder.raw.de := bbb.io.rgb_de
+    hdmi_encoder.raw.red := regred
+    hdmi_encoder.raw.green := reggreen
+    hdmi_encoder.raw.blue := regblue
+    hdmi_encoder.raw.vs := regvs
+    hdmi_encoder.raw.hs := reghs
+    hdmi_encoder.raw.de := regde
     hdmi_encoder.hdmi <> hdmi
   }
 
