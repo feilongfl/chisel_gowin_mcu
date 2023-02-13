@@ -9,7 +9,7 @@
 #include <zephyr/drivers/i2c.h>
 
 /* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS 100
+#define SLEEP_TIME_MS 1000
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED0_NODE DT_ALIAS(led0)
@@ -346,16 +346,13 @@ void main(void)
 	if (ret < 0) {
 		return;
 	}
-	// GPIO_OUTENSET |= 0x1 << 0;
 
 	iic_init(100);
-	k_msleep(10*SLEEP_TIME_MS);
+	k_msleep(SLEEP_TIME_MS);
 	ov_init();
 
 	while (1) {
 		ret = gpio_pin_toggle_dt(&led);
-		// IIC_GPIO ^= 0x1;
-		// GPIO_DATAOUT ^= 0x5;
 		if (ret < 0) {
 			return;
 		}
