@@ -30,22 +30,24 @@ class VideoRawToDviTmds extends Module {
   val dvi = IO(new VideoDviTmds)
 
   val tmdsr_enc = Module(new TMDSEncoder)
-  tmdsr_enc.io.en := raw.de
-  tmdsr_enc.io.ctrl := raw.vs ## raw.hs
-  tmdsr_enc.io.din := raw.red
-  dvi.red := tmdsr_enc.io.dout
+  tmdsr_enc.io.en := RegNext(raw.de)
+  tmdsr_enc.io.ctrl := RegNext(raw.vs ## raw.hs)
+  tmdsr_enc.io.din := RegNext(raw.red)
+  dvi.red := RegNext(tmdsr_enc.io.dout)
 
   val tmdsg_enc = Module(new TMDSEncoder)
-  tmdsg_enc.io.en := raw.de
-  tmdsg_enc.io.ctrl := raw.vs ## raw.hs
-  tmdsg_enc.io.din := raw.green
-  dvi.green := tmdsg_enc.io.dout
+  tmdsg_enc.io.en := RegNext(raw.de)
+  tmdsg_enc.io.ctrl := RegNext(raw.vs ## raw.hs)
+  tmdsg_enc.io.din := RegNext(raw.green)
+  dvi.green := RegNext(tmdsg_enc.io.dout)
+  // dvi.green := tmdsg_enc.io.dout
 
   val tmdsb_enc = Module(new TMDSEncoder)
-  tmdsb_enc.io.en := raw.de
-  tmdsb_enc.io.ctrl := raw.vs ## raw.hs
-  tmdsb_enc.io.din := raw.blue
-  dvi.blue := tmdsb_enc.io.dout
+  tmdsb_enc.io.en := RegNext(raw.de)
+  tmdsb_enc.io.ctrl := RegNext(raw.vs ## raw.hs)
+  tmdsb_enc.io.din := RegNext(raw.blue)
+  dvi.blue := RegNext(tmdsb_enc.io.dout)
+  // dvi.blue := tmdsb_enc.io.dout
 
   dvi.clock := "b1111100000".U(10.W)
 }
