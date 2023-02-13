@@ -40,14 +40,12 @@ class VideoRawToDviTmds extends Module {
   tmdsg_enc.io.ctrl := RegNext(raw.vs ## raw.hs)
   tmdsg_enc.io.din := RegNext(raw.green)
   dvi.green := RegNext(tmdsg_enc.io.dout)
-  // dvi.green := tmdsg_enc.io.dout
 
   val tmdsb_enc = Module(new TMDSEncoder)
   tmdsb_enc.io.en := RegNext(raw.de)
   tmdsb_enc.io.ctrl := RegNext(raw.vs ## raw.hs)
   tmdsb_enc.io.din := RegNext(raw.blue)
   dvi.blue := RegNext(tmdsb_enc.io.dout)
-  // dvi.blue := tmdsb_enc.io.dout
 
   dvi.clock := "b1111100000".U(10.W)
 }
